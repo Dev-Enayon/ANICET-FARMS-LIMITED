@@ -1,0 +1,61 @@
+---
+// Corporate footer. Social links are intentionally omitted until verified
+// accounts exist — no fabricated profiles.
+
+import Logo from './Logo.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { footerNav } from '../data/navigation';
+import { whatsappNumber, whatsappLink } from '../data/whatsapp';
+import { company } from '../data/company';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__top">
+      <div>
+        <h2 class="footer__brand">
+          <Logo variant="light" size="sm" showName={false} />
+        </h2>
+        <p class="footer__blurb">{company.shortStatement}</p>
+        <p class="footer__whatsapp">
+          <a
+            class="footer__whatsapp-link"
+            href={whatsappLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <WhatsAppIcon class="footer__whatsapp-icon" size={18} />
+            <span>Chat with ANICET FARMS LIMITED on WhatsApp</span>
+          </a>
+          <span class="footer__whatsapp-num">{whatsappNumber}</span>
+        </p>
+      </div>
+
+      {
+        footerNav.map((column) => (
+          <nav aria-label={column.heading}>
+            <h2>{column.heading}</h2>
+            <ul class="footer__list">
+              {
+                column.links.map((link) => (
+                  <li>
+                    <a class="footer__link" href={link.href}>
+                      {link.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {year} {company.legalName}. All rights reserved.</p>
+      <p>Built as an original corporate web experience.</p>
+    </div>
+  </div>
+</footer>

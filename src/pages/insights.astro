@@ -1,0 +1,92 @@
+---
+// Insights — publication hub. No fabricated articles: topics describe intent;
+// only verified publications are listed.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Reveal from '../components/Reveal.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import EmptyState from '../components/EmptyState.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { insights, topics } from '../data/insights';
+---
+
+<BaseLayout
+  title="Insights"
+  description="Publications and perspectives from ANICET FARMS LIMITED — published only when finalised."
+  path="/insights/"
+>
+  <PageHero
+    eyebrow="Insights"
+    title="Perspectives worth publishing."
+    lede="A home for verified articles, updates, and perspectives. Nothing is rushed to publication — quality over volume."
+  >
+    <Breadcrumbs slot="breadcrumbs" items={[{ name: 'Insights' }]} />
+  </PageHero>
+
+  <!-- Topics -->
+  <section class="section section--tight band band--sand">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Topics"
+        title="What we will write about."
+        align="center"
+      />
+      <div class="grid-4">
+        {
+          topics.map((topic) => (
+            <span class="chip chip--accent" style="justify-content:center">{topic}</span>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Publication listing -->
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Publications"
+        title="Latest insights."
+        lede="Verified, finalised writing only."
+      />
+      {
+        insights.length > 0 ? (
+          <div class="grid-3">
+            {
+              insights.map((item) => (
+                <article class="card">
+                  <p class="eyebrow">{item.date.split('T')[0]}</p>
+                  <h3>{item.title}</h3>
+                  <p>{item.excerpt}</p>
+                  <a class="btn btn--ghost btn--sm" href={`/insights/${item.slug}/`}>Read the insight</a>
+                </article>
+              ))
+            }
+          </div>
+        ) : (
+          <Reveal>
+            <EmptyState
+              title="The first publication is being prepared."
+              note="Writing is only published when it is finalised and approved — no drafts, no placeholders, no filler. Check back, or ask us directly about specific topics."
+            >
+              <div style="margin-top:1rem">
+                <a class="btn btn--ghost" href="/contact/">Suggest a topic</a>
+              </div>
+            </EmptyState>
+          </Reveal>
+        )
+      }
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow="Get In Touch"
+    title="Want the latest from the enterprise?"
+    actions={[
+      { label: 'Contact us on WhatsApp', variant: 'accent', whatsapp: true },
+      { label: 'About', href: '/about/', variant: 'ghost-dark' },
+    ]}
+  />
+</BaseLayout>

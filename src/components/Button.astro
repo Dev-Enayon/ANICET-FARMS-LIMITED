@@ -1,0 +1,51 @@
+---
+// Accessible button / link. Renders an <a> when `href` is provided, else a
+// <button>. DO NOT use for the enquiry form submit — the ContactForm renders
+// its own submit so its validation wiring stays intact.
+
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'accent' | 'ghost' | 'ghost-dark';
+  size?: 'md' | 'lg';
+  arrow?: boolean;
+  external?: boolean;
+  type?: 'button' | 'reset' | 'submit';
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  arrow = false,
+  external = false,
+  type = 'button',
+} = Astro.props;
+
+const classes = ['btn', `btn--${variant}`, size === 'lg' ? 'btn--lg' : ''].filter(Boolean).join(' ');
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class={classes}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+    >
+      <slot />
+      {arrow && (
+        <svg class="btn__arrow" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      )}
+    </a>
+  ) : (
+    <button class={classes} type={type}>
+      <slot />
+      {arrow && (
+        <svg class="btn__arrow" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      )}
+    </button>
+  )
+}

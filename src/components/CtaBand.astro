@@ -1,0 +1,114 @@
+---
+// Full-width closing call-to-action band.
+
+import Button from './Button.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+
+interface CtaAction {
+  label: string;
+  href?: string;
+  variant?: 'primary' | 'accent' | 'ghost' | 'ghost-dark';
+  /** Render as a WhatsApp contact link instead of a regular internal link. */
+  whatsapp?: boolean;
+}
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  tone?: 'dark' | 'accent';
+  actions?: CtaAction[];
+}
+
+const {
+  eyebrow,
+  title,
+  lede,
+  tone = 'dark',
+  actions = [{ label: 'Get In Touch', href: '/contact/', variant: 'primary' }],
+} = Astro.props;
+
+const resolvedActions = actions.map((action) => ({
+  ...action,
+  variant: tone === 'accent' && action.variant === 'primary' ? 'primary' : action.variant,
+}));
+---
+
+<section class:list={['section--tight', 'cta-band', `cta-band--${tone}`]}>
+  <div class="container cta-band__inner">
+    <div class="cta-band__copy">
+      {eyebrow && <p class:list={['eyebrow', tone === 'dark' && 'eyebrow--on-dark']}>{eyebrow}</p>}
+      <h2 class="display-2 cta-band__title">{title}</h2>
+      {lede && <p class="cta-band__lede">{lede}</p>}
+    </div>
+    <div class="cta-band__actions">
+      {resolvedActions.map((action) =>
+        action.whatsapp ? (
+          <WhatsAppButton label={action.label} variant={action.variant ?? 'primary'} size="lg" />
+        ) : (
+          <Button href={action.href} variant={action.variant ?? 'primary'} arrow>
+            {action.label}
+          </Button>
+        ),
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+  }
+
+  .cta-band--dark {
+    background: var(--color-primary);
+    color: var(--color-on-dark);
+  }
+  .cta-band--accent {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  .cta-band__inner {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .cta-band__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+
+  .cta-band__title {
+    max-width: 22ch;
+  }
+
+  .cta-band__lede {
+    color: var(--color-on-dark-dim);
+    max-width: 52ch;
+    line-height: var(--leading-relaxed);
+  }
+  .cta-band--accent .cta-band__lede {
+    color: rgb(255 253 248 / 0.85);
+  }
+
+  .cta-band__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 860px) {
+    .cta-band__inner {
+      grid-template-columns: 1fr;
+    }
+    .cta-band__actions {
+      justify-content: flex-start;
+    }
+  }
+</style>

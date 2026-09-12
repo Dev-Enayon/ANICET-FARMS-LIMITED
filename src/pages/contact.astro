@@ -1,0 +1,93 @@
+---
+// Contact — honest enquiry form + placeholder contact details until verified.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Reveal from '../components/Reveal.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ContactForm from '../components/ContactForm.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import WhatsAppIcon from '../components/WhatsAppIcon.astro';
+import { contactChannels } from '../data/company';
+import { whatsappNumber } from '../data/whatsapp';
+---
+
+<BaseLayout
+  title="Contact"
+  description="Contact ANICET FARMS LIMITED — professional enquiry form for partnerships, products, investment, and more."
+  path="/contact/"
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Let's talk about what we can build together."
+    lede="For partnership, product information, distribution, investment, or employment — send a direct enquiry and the right person will respond."
+  >
+    <Breadcrumbs slot="breadcrumbs" items={[{ name: 'Contact' }]} />
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Details -->
+        <div class="contact-details">
+          <SectionHeading
+            eyebrow="Contact Details"
+            title="Reach the enterprise."
+            lede="Verified contact channels will appear here once confirmed."
+          />
+          <Reveal delay={100}>
+            <div class="card card--whatsapp stack-sm">
+              <WhatsAppIcon class="whatsapp-card__icon" size={28} />
+              <div class="stack-sm">
+                <h3>Chat with ANICET FARMS LIMITED</h3>
+                <p>
+                  The fastest way to reach the enterprise — WhatsApp {whatsappNumber}. The
+                  conversation opens with a pre-filled enquiry message.
+                </p>
+              </div>
+              <WhatsAppButton
+                label="Chat with ANICET FARMS LIMITED on WhatsApp"
+                variant="accent"
+                size="lg"
+              />
+            </div>
+
+            <div class="stack-md" style="margin-top:2rem">
+              {
+                contactChannels.map((channel) => (
+                  <div class="contact-details__row">
+                    <span class="contact-details__icon" aria-hidden="true">{channel.icon}</span>
+                    <div>
+                      <h3>{channel.label}</h3>
+                      <p>{channel.value}</p>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+            <div class="empty-state" style="margin-top:2rem">
+              <h3>Additional contact details pending.</h3>
+              <p>
+                Postal address, phone, and email will be published as soon as they are confirmed
+                by ANICET FARMS LIMITED. WhatsApp above is the verified direct channel, and the
+                enquiry form on this page is ready to use now.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+
+        <!-- Form -->
+        <div class="contact-form-wrap">
+          <Reveal delay={150}>
+            <div class="card card--form">
+              <div class="section--tight" style="padding-top:0">
+                <ContactForm />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

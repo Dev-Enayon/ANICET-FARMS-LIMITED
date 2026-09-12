@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Environment — local overrides, never commit real secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+*.log

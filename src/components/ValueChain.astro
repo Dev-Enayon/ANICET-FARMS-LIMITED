@@ -1,0 +1,49 @@
+---
+// Value-chain diagram rendered on the dark band.
+// Unconfirmed stages are shown as dashed "framework" placeholders; confirmed
+// stages activate their styling. No stage is asserted as active until data in
+// services.ts says otherwise.
+
+import SectionHeading from './SectionHeading.astro';
+import { valueChain, valueChainNote } from '../data/services';
+
+const confirmed = valueChain.filter((stage) => stage.status === 'confirmed').length;
+---
+
+<section class="band band--dark section" id="value-chain">
+  <div class="container">
+    <SectionHeading
+      eyebrow="Our Approach"
+      title={confirmed > 0 ? 'The value chain we operate' : 'The value chain we are building'}
+      lede={valueChainNote}
+      dark
+    />
+
+    <div class="chain">
+      {
+        valueChain.map((stage, index) => (
+          <div
+            class:list={['chain__node', stage.status === 'confirmed' && 'is-confirmed']}
+            data-reveal
+            style={`--reveal-delay: ${index * 60}ms`}
+          >
+            <span class="chain__num">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3>{stage.label}</h3>
+            {stage.description && <p>{stage.description}</p>}
+            <span
+              class:list={[
+                'chip',
+                'chip--on-dark',
+                stage.status === 'confirmed' && 'chip--pending',
+              ]}
+            >
+              {stage.status === 'confirmed' ? 'Verified' : 'Awaiting confirmation'}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

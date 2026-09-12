@@ -1,0 +1,47 @@
+---
+// Privacy policy — PLACEHOLDER. Template-only content must never ship as a
+// real privacy policy; it requires legal drafting for the operating
+// jurisdictions of ANICET FARMS LIMITED.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { siteUrl } from '../data/site';
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description="Privacy statement placeholder for ANICET FARMS LIMITED — final legal text pending."
+  path="/privacy-policy/"
+>
+  <PageHero
+    eyebrow="Privacy Policy"
+    title="Privacy, taken seriously."
+    lede="This page is a structural placeholder. A real, legally-drafted privacy policy will replace it before launch."
+  >
+    <Breadcrumbs slot="breadcrumbs" items={[{ name: 'Privacy Policy' }]} />
+  </PageHero>
+
+  <section class="section body-copy">
+    <div class="container body-copy__inner">
+      <div class="empty-state">
+        <h3>This policy is not yet written.</h3>
+        <p>
+          A compliant privacy policy for {siteUrl} requires the company's confirmed details —
+          legal entity, operating jurisdictions, data-handling practices, and retention policy.
+          This placeholder must be replaced with properly drafted legal text before the site
+          goes live. Nothing on this page constitutes legal advice.
+        </p>
+      </div>
+
+      <h2>What this placeholder will contain</h2>
+      <p>
+        Once drafted, this page will explain what personal data the enquiry form collects
+        (name, email, phone, company, message), why it is collected, how long it is retained,
+        and the rights available to visitors. Our form does not currently store data on any
+        server — submissions go directly to the configured destination (see the contact page
+        notes in the project documentation).
+      </p>
+    </div>
+  </section>
+</BaseLayout>

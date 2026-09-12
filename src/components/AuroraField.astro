@@ -1,0 +1,79 @@
+---
+// Original abstract artwork for the homepage hero — "aerial fields" seen from
+// above: contour lines, layered parcels, a single fired-clay accent plot.
+//
+// This is a replaceable visual. When real ANICET FARMS photography is
+// approved, swap this component for an <Image> raster (see docs). The artwork
+// is decorative, so it is hidden from assistive tech.
+
+interface Props {
+  /** Optional caption/label rendered as a floating chip. */
+  label?: string;
+}
+
+const { label } = Astro.props;
+---
+
+<figure class="aurora-field" role="presentation" aria-hidden="true">
+  <svg viewBox="0 0 800 700" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <rect width="800" height="700" fill="#2a2620" />
+
+    <!-- contour lines -->
+    <g fill="none" stroke="#f4f0e6" stroke-opacity="0.1" stroke-width="1.5">
+      <path d="M-40 190 Q120 120 280 190 T620 200 T840 190" />
+      <path d="M-40 285 Q140 215 300 285 T660 295 T840 285" />
+      <path d="M-40 400 Q100 330 260 400 T600 410 T840 400" />
+      <path d="M-40 520 Q160 450 320 520 T680 530 T840 520" />
+    </g>
+
+    <!-- upper-left parcels -->
+    <g transform="rotate(-6 240 240)">
+      <rect x="60" y="120" width="180" height="120" rx="6" transform="rotate(5 150 180)" fill="#f4f0e6" fill-opacity="0.94" />
+      <rect x="230" y="108" width="170" height="132" rx="6" transform="rotate(-4 315 174)" fill="#c0552c" />
+    </g>
+
+    <!-- middle band -->
+    <g transform="rotate(4 420 360)">
+      <rect x="330" y="300" width="250" height="130" rx="6" fill="#f4f0e6" fill-opacity="0.6" />
+      <g stroke="#24211b" stroke-opacity="0.35" stroke-width="2">
+        <path d="M385 300 v130 M440 300 v130 M495 300 v130" />
+      </g>
+    </g>
+
+    <!-- lower-right clay parcel with furrows -->
+    <g transform="rotate(-8 640 480)">
+      <rect x="520" y="420" width="200" height="150" rx="6" fill="#c0552c" />
+      <g stroke="#f4f0e6" stroke-opacity="0.5" stroke-width="2">
+        <path d="M570 420 v150 M620 420 v150 M670 420 v150" />
+      </g>
+    </g>
+
+    <!-- sample dots -->
+    <circle cx="120" cy="620" r="5" fill="#c0552c" />
+    <circle cx="160" cy="648" r="4" fill="#f4f0e6" fill-opacity="0.8" />
+    <circle cx="700" cy="120" r="4" fill="#f4f0e6" fill-opacity="0.7" />
+  </svg>
+  {label && <figcaption class="aurora-field__label">{label}</figcaption>}
+</figure>
+
+<style>
+  .aurora-field__label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: var(--text-xs);
+    font-family: var(--font-sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-on-dark);
+    background: rgb(36 33 27 / 0.6);
+    border: 1px solid rgb(244 240 230 / 0.25);
+    border-radius: var(--radius-pill);
+    padding: 0.5rem 0.9rem;
+    backdrop-filter: blur(4px);
+  }
+
+  .aurora-field {
+    position: relative;
+  }
+</style>

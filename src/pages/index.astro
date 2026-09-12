@@ -1,0 +1,226 @@
+---
+// Homepage — editorial "modern agribusiness corporation" composition.
+// All copy is neutral/aspirational; nothing here invents facts about
+// ANICET FARMS LIMITED. TODO markers show where verified copy belongs.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AuroraField from '../components/AuroraField.astro';
+import Reveal from '../components/Reveal.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import ValueChain from '../components/ValueChain.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { company, mission, vision, values } from '../data/company';
+import { capabilities } from '../data/services';
+
+const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partnership-first'];
+---
+
+<BaseLayout
+  title="Home"
+  description={company.shortStatement}
+  path="/"
+>
+  <!-- =========================================================== HERO -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <Reveal>
+          <p class="eyebrow eyebrow--on-dark">{company.legalName} · {company.industry}</p>
+        </Reveal>
+        <Reveal delay={80}>
+          <h1>Building better agriculture for a&nbsp;stronger future.</h1>
+        </Reveal>
+        <Reveal delay={160}>
+          <p class="hero__lede">
+            {company.shortStatement}
+          </p>
+        </Reveal>
+        <Reveal delay={240}>
+          <div class="hero__cta">
+            <Button href="/about/" variant="accent" arrow size="lg">Discover our work</Button>
+            <WhatsAppButton label="Chat on WhatsApp" variant="ghost-dark" size="lg" />
+          </div>
+        </Reveal>
+      </div>
+      <Reveal delay={200} class="hero__visual">
+        <AuroraField label="Agricultural enterprise" />
+      </Reveal>
+    </div>
+    <div class="hero__meta">
+      <div class="container hero__meta-inner">
+        <div class="stack-sm">
+          <p class="eyebrow eyebrow--on-dark">Enterprise profile</p>
+          <p>
+            {metaChips.map((chip) => <span class="chip chip--on-dark" style="margin-right:.5rem">{chip}</span>)}
+          </p>
+        </div>
+        <a class="hero__meta-link" href="#who-we-are">
+          Explore the enterprise
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 1v13M3 9l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================= WHO WE ARE -->
+  <section class="section" id="who-we-are">
+    <div class="container">
+      <div class="split-grid">
+        <div>
+          <SectionHeading
+            eyebrow="Who We Are"
+            title="A professional agricultural enterprise."
+            lede="ANICET FARMS LIMITED is positioned to serve clients, partners, and institutions with disciplined, dependable agricultural operations."
+          >
+            <Reveal delay={100}>
+              <p class="lede" style="margin-top:1.25rem">
+                Until the company's official profile is finalised, this section will carry the
+                verified story. The architecture below is ready for that content.
+              </p>
+            </Reveal>
+          </SectionHeading>
+        </div>
+        <Reveal delay={120}>
+          <div class="about-card card">
+            <p class="eyebrow">Mission &amp; Vision</p>
+            <h3 class="display-3" style="margin-top:1.25rem">To be defined with the company.</h3>
+            {
+              mission === null && vision === null && (
+                <p style="margin-top:1rem">
+                  Verified mission and vision statements will replace this placeholder when
+                  provided. <!-- TODO: populate mission/vision from verified company copy. -->
+                </p>
+              )
+            }
+          </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================== OPTIONAL STAT PANEL
+       Statistics are hidden unless verified. The registry communicates intent
+       without ever inventing numbers. -->
+  <section class="section--tight band band--sand">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Direction"
+        title="Foundations before figures."
+        align="center"
+      />
+      <Reveal>
+        <div class="grid-3">
+          {
+            values.map((value) => (
+              <div class="card" data-reveal>
+                <h3>{value.title}</h3>
+                <p>{value.description}</p>
+              </div>
+            ))
+          }
+        </div>
+      </Reveal>
+      <Reveal delay={100}>
+        <div class="empty-state" style="margin-top:2rem">
+          <h3>Verified metrics will appear here when available.</h3>
+          <p>
+            Production area, output volumes, years of operation, headcount and partnerships
+            will be published once the company's figures are confirmed. No estimates are shown.
+            <!-- TODO: populate src/data/impact.ts `statistics` with verified values. -->
+          </p>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ==================================================== VALUE CHAIN -->
+  <ValueChain />
+
+  <!-- ================================================== CAPABILITIES -->
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        eyebrow="What We Do"
+        title="Capabilities, defined by evidence."
+        lede="This space lists ANICET FARMS LIMITED's confirmed activities as they are verified."
+      />
+      {
+        capabilities.length > 0 ? (
+          <div class="grid-3">
+            {
+              capabilities.map((capability) => (
+                <Reveal>
+                  <article class="card">
+                    <span class="chip chip--accent">{capability.status === 'confirmed' ? 'Confirmed capability' : 'Pending confirmation'}</span>
+                    <h3>{capability.title}</h3>
+                    <p>{capability.description}</p>
+                  </article>
+                </Reveal>
+              ))
+            }
+          </div>
+        ) : (
+          <Reveal>
+            <div class="empty-state">
+              <h3>Confirmed capabilities are being compiled.</h3>
+              <p>
+                The capabilities will be displayed here with detail pages once ANICET FARMS
+                LIMITED confirms its activities. Until then we do not present assumptions as fact.
+                <!-- TODO: populate src/data/services.ts `capabilities` with verified activities. -->
+              </p>
+              <div style="margin-top:.5rem">
+                <Button href="/what-we-do/" variant="ghost" arrow>See the approach</Button>
+              </div>
+            </div>
+          </Reveal>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- ================================================ PARTNERSHIP / B2B -->
+  <section class="section band band--dark">
+    <div class="container">
+      <div class="split-grid split-grid--reverse">
+        <div>
+          <SectionHeading
+            eyebrow="Work With Us"
+            title="Built for long-term partnerships."
+            lede="If your organisation works across agriculture, food processing, distribution, or retail, we would welcome a conversation — from early conversations through to structured supply relationships."
+            dark
+          >
+            <Reveal delay={120}>
+              <div class="grid-2" style="margin-top:1.5rem">
+                <span class="chip chip--on-dark">Distributors</span>
+                <span class="chip chip--on-dark">Retailers</span>
+                <span class="chip chip--on-dark">Food processors</span>
+                <span class="chip chip--on-dark">Institutions</span>
+              </div>
+            </Reveal>
+          </SectionHeading>
+        </div>
+        <Reveal delay={140}>
+          <div class="stack-md">
+            <p class="text-on-dark-dim">No claim of existing partnerships is made; these are the categories of partner we are oriented to serve.</p>
+            <div>
+              <WhatsAppButton label="Start a conversation" variant="accent" size="lg" />
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================== CTA -->
+  <CtaBand
+    eyebrow="Get In Touch"
+    title="Let's build an agricultural future together."
+    lede="Speak to the team about products, partnerships, investment or employment."
+    actions={[
+      { label: 'Contact the enterprise', variant: 'accent', whatsapp: true },
+      { label: 'About us', href: '/about/', variant: 'ghost-dark' },
+    ]}
+  />
+</BaseLayout>

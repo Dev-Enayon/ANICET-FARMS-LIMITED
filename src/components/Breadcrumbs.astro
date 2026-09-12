@@ -1,0 +1,98 @@
+---
+// Accessible breadcrumb trail. Rendered inside dark page heroes by default
+// (pass `dark` to style for light backgrounds).
+
+
+
+interface Crumb {
+  name: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+  dark?: boolean;
+}
+
+const { items, dark = true } = Astro.props;
+const last = items.length - 1;
+---
+
+<nav class:list={['breadcrumbs', dark && 'breadcrumbs--dark']} aria-label="Breadcrumb">
+  <ol class="breadcrumbs__list">
+    <li class="breadcrumbs__item">
+      <a href="/" class="breadcrumbs__link">Home</a>
+    </li>
+    {
+      items.map((item, index) => (
+        <li
+          class="breadcrumbs__item"
+          aria-current={index === last ? 'page' : undefined}
+        >
+          {item.href ? (
+            <a class="breadcrumbs__link" href={item.href}>{item.name}</a>
+          ) : (
+            <span class="breadcrumbs__current">{item.name}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs {
+    margin-bottom: 2.25rem;
+  }
+
+  .breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .breadcrumbs__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-xs);
+    font-weight: 550;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .breadcrumbs__item:not(:last-child)::after {
+    content: '/';
+    color: var(--color-border);
+  }
+
+  .breadcrumbs--dark .breadcrumbs__item:not(:last-child)::after {
+    color: rgb(244 240 230 / 0.4);
+  }
+
+  .breadcrumbs__link {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  .breadcrumbs__link:hover {
+    color: var(--color-accent);
+  }
+
+  .breadcrumbs--dark .breadcrumbs__link {
+    color: var(--color-on-dark-dim);
+  }
+  .breadcrumbs--dark .breadcrumbs__link:hover {
+    color: var(--color-accent-soft);
+  }
+
+  .breadcrumbs__current {
+    color: var(--color-text);
+  }
+  .breadcrumbs--dark .breadcrumbs__current {
+    color: var(--color-on-dark);
+  }
+</style>

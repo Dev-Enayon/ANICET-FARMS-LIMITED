@@ -1,0 +1,44 @@
+---
+// Section heading block: eyebrow + display title + optional lede.
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  align?: 'left' | 'center';
+  dark?: boolean;
+}
+
+const { eyebrow, title, lede, align = 'left', dark = false } = Astro.props;
+---
+
+<div
+  class:list={['has-heading-section', `has-heading-section--${align}`, dark && 'has-heading-section--dark']}
+>
+  {eyebrow && <p class:list={['eyebrow', dark && 'eyebrow--on-dark']}>{eyebrow}</p>}
+  <h2 class:list={['display-2', 'has-heading-section__title', dark && 'text-on-dark']}>{title}</h2>
+  {lede && <p class:list={['lede', dark && 'text-on-dark-dim']}>{lede}</p>}
+  <slot />
+</div>
+
+<style>
+  .has-heading-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: flex-start;
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .has-heading-section--center {
+    align-items: center;
+    text-align: center;
+  }
+
+  .has-heading-section--center .lede {
+    text-align: center;
+  }
+
+  .has-heading-section__title {
+    max-width: 30ch;
+  }
+</style>

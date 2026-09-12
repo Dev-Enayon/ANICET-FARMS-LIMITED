@@ -1,0 +1,20 @@
+---
+// Reveal-on-scroll wrapper. Delays can be staggered per element.
+// Harmless under reduced motion (handled in global.css + reveal script).
+
+interface Props {
+  /** Transition delay in milliseconds (stagger). */
+  delay?: number;
+  class?: string;
+}
+
+const { delay = 0, class: className } = Astro.props;
+---
+
+<div
+  class:list={['reveal', className]}
+  data-reveal
+  style={`--reveal-delay: ${delay}ms`}
+>
+  <slot />
+</div>

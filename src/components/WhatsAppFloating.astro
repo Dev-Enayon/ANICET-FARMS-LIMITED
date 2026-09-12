@@ -1,0 +1,18 @@
+---
+// Floating WhatsApp action button. Icon + explicit accessible label; opens the
+// verified WhatsApp number with a pre-filled message. Rendered site-wide.
+
+import { whatsappLink } from '../data/whatsapp';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+---
+
+<a
+  class="whatsapp-fab"
+  href={whatsappLink()}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Chat with ANICET FARMS LIMITED on WhatsApp"
+>
+  <WhatsAppIcon class="whatsapp-fab__icon" />
+  <span class="visually-hidden">Chat with ANICET FARMS LIMITED on WhatsApp</span>
+</a>

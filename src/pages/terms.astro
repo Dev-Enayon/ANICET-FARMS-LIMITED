@@ -1,0 +1,43 @@
+---
+// Terms of use — PLACEHOLDER. Requires legal drafting, never ship a template
+// as binding terms.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { company } from '../data/company';
+---
+
+<BaseLayout
+  title="Terms of Use"
+  description="Terms of use placeholder for ANICET FARMS LIMITED — final legal text pending."
+  path="/terms/"
+>
+  <PageHero
+    eyebrow="Terms of Use"
+    title="Clear terms, honest obligations."
+    lede="This page is a structural placeholder. Legally-reviewed terms will replace it before launch."
+  >
+    <Breadcrumbs slot="breadcrumbs" items={[{ name: 'Terms of Use' }]} />
+  </PageHero>
+
+  <section class="section body-copy">
+    <div class="container body-copy__inner">
+      <div class="empty-state">
+        <h3>These terms are not yet written.</h3>
+        <p>
+          Terms of use for {company.legalName} must be drafted and legally reviewed before this
+          site launches. Until then this page is a placeholder and must not be relied upon.
+        </p>
+      </div>
+
+      <h2>What this placeholder will contain</h2>
+      <p>
+        Once drafted, these terms will cover acceptable use of the site, the non-binding nature of
+        content while the company's profile is still being confirmed, intellectual property, and
+        the applicable law for any dispute. All content on this site is subject to correction
+        until the company formally publishes its information.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

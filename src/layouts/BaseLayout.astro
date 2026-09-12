@@ -1,0 +1,79 @@
+---
+// Base layout wrapping every page. Contains the global <head> SEO, skips links,
+// header, main content slot, and footer. Font imports are handled by the global
+// CSS file; this layout adds the interactive scripts.
+
+import Seo from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFloating from '../components/WhatsAppFloating.astro';
+
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  path?: string;
+  ogImage?: string;
+  schema?: string;
+  /** Page class applied to the <body> (useful for dark-body pages). */
+  bodyClass?: string;
+}
+
+const {
+  title,
+  description,
+  path = '/',
+  ogImage,
+  schema,
+  bodyClass,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- Apply the saved/system theme before anything paints (prevents a flash
+         of the wrong theme on load). -->
+    <script is:inline>
+      (() => {
+        const KEY = 'anicet-theme';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let theme = prefersDark ? 'dark' : 'light';
+        try {
+          const stored = localStorage.getItem(KEY);
+          if (stored === 'light' || stored === 'dark') theme = stored;
+        } catch {
+          theme = prefersDark ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+    <Seo title={title} description={description} path={path} ogImage={ogImage} schema={schema} />
+  </head>
+  <body class:list={[bodyClass]}>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <Header currentPath={path} />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <WhatsAppFloating />
+
+    <script>
+      import { initNav } from '../scripts/nav';
+      import { initReveal } from '../scripts/reveal';
+      import { initThemeToggle } from '../scripts/theme';
+
+      initNav();
+      initReveal();
+      initThemeToggle();
+    </script>
+  </body>
+</html>

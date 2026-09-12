@@ -1,0 +1,112 @@
+---
+// Enquiry form — real, validated, honest.
+//
+// Work flow:
+//   1. Strict client-side validation (name, email, optional phone/company, subject, message).
+//   2. If PUBLIC_CONTACT_FORM_ENDPOINT is configured → POST JSON to it.
+//   3. Otherwise → validated mailto fallback (opens the user's email app
+//      pre-filled). It never claims to have sent without a backend.
+
+const subjectOptions = [
+  'Partnership enquiry',
+  'Product information',
+  'Distribution opportunity',
+  'Investment',
+  'Employment',
+  'Media',
+  'General enquiry',
+];
+---
+
+<form class="enquiry-form" data-contact-form novalidate>
+  <div class="enquiry-form__grid">
+    <div class="field">
+      <label class="field__label" for="contact-name">
+        Full name <span class="field__req" aria-hidden="true">*</span>
+      </label>
+      <input class="field__input" type="text" id="contact-name" name="name" autocomplete="name" required aria-required="true" />
+      <span class="field__error" data-error-for="name" role="alert" hidden></span>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contact-email">
+        Email <span class="field__req" aria-hidden="true">*</span>
+      </label>
+      <input class="field__input" type="email" id="contact-email" name="email" autocomplete="email" required aria-required="true" />
+      <span class="field__error" data-error-for="email" role="alert" hidden></span>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contact-phone">Phone</label>
+      <input class="field__input" type="tel" id="contact-phone" name="phone" autocomplete="tel" inputmode="tel" />
+      <span class="field__error" data-error-for="phone" role="alert" hidden></span>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contact-company">Company / Organisation</label>
+      <input class="field__input" type="text" id="contact-company" name="company" autocomplete="organization" />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contact-subject">
+        Subject <span class="field__req" aria-hidden="true">*</span>
+      </label>
+      <select class="field__select" id="contact-subject" name="subject" required aria-required="true">
+        <option value="" selected>Select a subject…</option>
+        {subjectOptions.map((subject) => <option value={subject}>{subject}</option>)}
+      </select>
+      <span class="field__error" data-error-for="subject" role="alert" hidden></span>
+    </div>
+
+    <div class="field field--full">
+      <label class="field__label" for="contact-message">
+        Message <span class="field__req" aria-hidden="true">*</span>
+      </label>
+      <textarea class="field__textarea" id="contact-message" name="message" required aria-required="true"></textarea>
+      <span class="field__error" data-error-for="message" role="alert" hidden></span>
+    </div>
+  </div>
+
+  <div class="enquiry-form__actions">
+    <button class="btn btn--accent btn--lg" type="submit">
+      Send enquiry
+      <svg class="btn__arrow" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </div>
+
+  <p class="form-status" data-form-status hidden></p>
+</form>
+
+<script>
+  import { initContactForm } from '../scripts/forms';
+
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  if (form) initContactForm(form);
+</script>
+
+<style>
+  .enquiry-form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1.5rem;
+  }
+
+  .field--full {
+    grid-column: 1 / -1;
+  }
+
+  .enquiry-form__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 620px) {
+    .enquiry-form__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

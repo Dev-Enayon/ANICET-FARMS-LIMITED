@@ -1,0 +1,68 @@
+---
+// Honest empty state for data that has not been provided yet.
+// Shows rather than fabricating content.
+
+interface Props {
+  title?: string;
+  note?: string;
+  tone?: 'light' | 'dark';
+}
+
+const {
+  title = 'Awaiting verified information',
+  note = 'This section will be populated once the relevant company information has been confirmed.',
+  tone = 'light',
+} = Astro.props;
+---
+
+<div class:list={['empty-state', `empty-state--${tone}`]}>
+  <svg class="empty-state__mark" width="40" height="40" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+    <g fill="none" stroke-width="1.6">
+      <rect x="7" y="8" width="11" height="9" rx="1.5" />
+      <rect x="22" y="8" width="11" height="9" rx="1.5" />
+      <rect x="7" y="23" width="11" height="9" rx="1.5" />
+      <rect x="22" y="23" width="11" height="9" rx="1.5" />
+    </g>
+  </svg>
+  <h3>{title}</h3>
+  <p>{note}</p>
+  <slot />
+</div>
+
+<style>
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border: 1px dashed var(--color-border);
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    padding: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .empty-state__mark {
+    color: var(--color-accent);
+  }
+
+  .empty-state h3 {
+    font-size: var(--text-xl);
+  }
+
+  .empty-state p {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    max-width: 55ch;
+  }
+
+  .empty-state--dark {
+    background: transparent;
+    border-color: rgb(244 240 230 / 0.25);
+  }
+  .empty-state--dark h3 {
+    color: var(--color-on-dark);
+  }
+  .empty-state--dark p {
+    color: var(--color-on-dark-dim);
+  }
+</style>

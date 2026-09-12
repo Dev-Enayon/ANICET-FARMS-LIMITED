@@ -1,0 +1,98 @@
+---
+// Sticky corporate header — desktop nav, accessible mobile <dialog> menu,
+// clear active states, keyboard friendly (dialog provides focus trapping +
+// Escape). No e-commerce cart: this is a corporate site.
+
+import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+import { primaryNav } from '../data/navigation';
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+
+const isActive = (match: string) => currentPath.startsWith(match);
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href="/" class="site-header__brand" aria-label="ANICET FARMS LIMITED — home">
+      <Logo />
+    </a>
+
+    <nav class="site-header__nav" aria-label="Primary">
+      <ul class="nav-list">
+        {
+          primaryNav.map((item) => (
+            <li>
+              <a
+                class="nav-link"
+                href={item.href}
+                aria-current={isActive(item.match) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <ThemeToggle placement="header" />
+      <WhatsAppButton label="Get In Touch" variant="primary" />
+      <button
+        class="nav-toggle"
+        data-nav-open
+        type="button"
+        aria-haspopup="dialog"
+        aria-controls="site-menu"
+        aria-expanded="false"
+      >
+        <span class="visually-hidden">Open navigation menu</span>
+        <span class="nav-toggle__bar" aria-hidden="true"></span>
+        <span class="nav-toggle__bar" aria-hidden="true"></span>
+        <span class="nav-toggle__bar" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <dialog class="site-menu" id="site-menu" data-nav-dialog aria-label="Site navigation">
+    <div class="site-menu__head">
+      <Logo size="sm" />
+      <button class="site-menu__close" data-nav-close type="button" aria-label="Close navigation menu">
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+          <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <div class="site-menu__body">
+      <ul class="site-menu__list">
+        {
+          primaryNav.map((item) => (
+            <li>
+              <a
+                class="site-menu__link"
+                href={item.href}
+                aria-current={isActive(item.match) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="site-menu__cta-row">
+        <ThemeToggle placement="menu" />
+        <WhatsAppButton
+          label="Get In Touch"
+          variant="primary"
+          attrs={{ 'data-cta': '' }}
+        />
+      </div>
+    </div>
+  </dialog>
+</header>

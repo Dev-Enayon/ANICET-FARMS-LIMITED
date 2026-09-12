@@ -1,0 +1,177 @@
+---
+// About — story, mission/vision, values, leadership, operations.
+// No invented people, dates, or achievements. Empty collections render as
+// honest placeholders.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Reveal from '../components/Reveal.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import AuroraField from '../components/AuroraField.astro';
+import EmptyState from '../components/EmptyState.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { company, mission, vision, values } from '../data/company';
+import { leadership } from '../data/people';
+---
+
+<BaseLayout
+  title="About"
+  description="Learn about ANICET FARMS LIMITED — an agricultural enterprise built on disciplined production, professional operations, and long-term value."
+  path="/about/"
+>
+  <PageHero eyebrow="About Us" title="The story of a serious agricultural enterprise." lede={company.shortStatement}>
+    <Breadcrumbs slot="breadcrumbs" items={[{ name: 'About' }]} />
+    <span class="chip chip--on-dark">Corporate profile</span>
+    <span class="chip chip--on-dark">Placeholder-ready architecture</span>
+  </PageHero>
+
+  <!-- Story -->
+  <section class="section">
+    <div class="container">
+      <div class="split-grid">
+        <SectionHeading
+          eyebrow="Who We Are"
+          title="Disciplined production. Professional operations. Long-term value."
+          lede="ANICET FARMS LIMITED is being positioned as a dependable partner across the agricultural value chain."
+        >
+          <Reveal delay={80}>
+            <p class="lede" style="margin-top:1.25rem">
+              The company has not yet supplied an official description. This page is built so the
+              verified narrative, milestones, and imagery can be dropped in without redesign.
+              <!-- TODO: replace with verified company story + imagery. -->
+            </p>
+          </Reveal>
+        </SectionHeading>
+        <Reveal delay={140}>
+          <AuroraField label="Company story — imagery slot" />
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission & Vision -->
+  <section class="section section--tight band band--sand">
+    <div class="container">
+      <SectionHeading eyebrow="Purpose" title="Mission and vision" align="center" />
+      <div class="grid-2">
+        <Reveal>
+          <article class="card">
+            <span class="chip chip--accent">Mission</span>
+            <p class="display-3" style="margin-top:1rem">
+              {mission ?? 'Our mission statement will be published here once confirmed.'}
+              <!-- TODO: populate `mission` in src/data/company.ts -->
+            </p>
+          </article>
+        </Reveal>
+        <Reveal delay={100}>
+          <article class="card">
+            <span class="chip chip--accent">Vision</span>
+            <p class="display-3" style="margin-top:1rem">
+              {vision ?? 'Our vision for the future will be published here once confirmed.'}
+              <!-- TODO: populate `vision` in src/data/company.ts -->
+            </p>
+          </article>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Values"
+        title="The standards we hold ourselves to."
+        lede="These are working definitions. Wording will be refined with the company before launch."
+      />
+      <div class="grid-3">
+        {
+          values.map((value, index) => (
+            <Reveal delay={index * 60}>
+              <article class="card">
+                <span class="card__index">{String(index + 1).padStart(2, '0')}</span>
+                <h3>{value.title}</h3>
+                <p>{value.description}</p>
+              </article>
+            </Reveal>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Leadership -->
+  <section class="section section--tight band band--dark">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Leadership"
+        title="The team behind the enterprise."
+        dark
+      />
+      {
+        leadership.length > 0 ? (
+          <div class="grid-3">
+            {
+              leadership.map((member) => (
+                <article class="card">
+                  <h3>{member.name}</h3>
+                  <p class="chip chip--accent" style="margin-top:.5rem">{member.role}</p>
+                  {member.bio && <p style="margin-top:1rem">{member.bio}</p>}
+                </article>
+              ))
+            }
+          </div>
+        ) : (
+          <EmptyState
+            tone="dark"
+            title="Leadership profiles will be published once confirmed."
+            note="No leadership information has been provided, so none is shown. The profile layout below is ready for real team members."
+          >
+            <div class="grid-3" style="margin-top:1.25rem">
+              {[0, 1, 2].map((_) => (
+                <div class="empty-state empty-state--dark" aria-hidden="true">
+                  <span class="empty-state__mark" style="filter:grayscale(1)">{'▣'}</span>
+                  <h3>Profile slot</h3>
+                  <p>Name, role, and biography — pending company input.</p>
+                </div>
+              ))}
+            </div>
+          </EmptyState>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- Operations bridge -->
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Operations"
+        title="How we work — from ground to market."
+        lede="A summary of verified operational coverage will live here. Operations are currently awaiting official confirmation."
+      />
+      <Reveal>
+        <div class="empty-state" style="margin-top:1.25rem">
+          <h3>Operational outline forthcoming.</h3>
+          <p>
+            Coverage, locations, and flow from source to market will be documented here as they
+            are verified. Until then, see the approach framework on the What We Do page.
+          </p>
+          <div style="margin-top:.5rem">
+            <a class="btn btn--ghost" href="/what-we-do/">See our approach</a>
+          </div>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow="Get In Touch"
+    title="Talk to the team about working together."
+    actions={[
+      { label: 'Contact us on WhatsApp', variant: 'accent', whatsapp: true },
+      { label: 'What We Do', href: '/what-we-do/', variant: 'ghost-dark' },
+    ]}
+  />
+</BaseLayout>

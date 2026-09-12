@@ -1,0 +1,151 @@
+---
+// Brand logo treatment.
+//
+// Renders the official ANICET FARMS LIMITED emblem (default /img/logo.png — a
+// transparent cutout of the owner-supplied img/logo.jpg) followed by the
+// verified company name, side by side in a single flex row. Used by the header
+// and the mobile menu. The footer passes showName={false} to keep its compact
+// emblem-only mark unchanged.
+
+import { company } from '../data/company';
+
+interface Props {
+  logoSrc?: string;
+  variant?: 'dark' | 'light';
+  size?: 'sm' | 'md';
+  showName?: boolean;
+}
+
+const { logoSrc = '/img/logo.png', variant = 'dark', size = 'md', showName = true } = Astro.props;
+const isSmall = size === 'sm';
+---
+
+<span class:list={['logo', `logo--${variant}`, isSmall && 'logo--sm']}>
+  {logoSrc !== undefined ? (
+    <img
+      class:list={['logo__img', isSmall && 'logo__img--sm']}
+      src={logoSrc}
+      width="1136"
+      height="912"
+      alt=""
+      loading="eager"
+    />
+  ) : (
+    <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+      <rect class="logo__mark-bg" width="40" height="40" rx="8" />
+      <g class="logo__mark-grid" fill="none" stroke-width="1.6">
+        <rect x="7" y="8" width="11" height="9" rx="1.5" />
+        <rect x="22" y="8" width="11" height="9" rx="1.5" />
+        <rect x="7" y="23" width="11" height="9" rx="1.5" />
+      </g>
+      <rect class="logo__mark-cell" x="22" y="23" width="11" height="9" rx="1.5" />
+    </svg>
+  )}
+
+  {showName && (
+    <span class="logo__words">
+      <span class="logo__name">{company.legalName}</span>
+    </span>
+  )}
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+  }
+
+  .logo__mark {
+    width: 2.6rem;
+    height: 2.6rem;
+    flex: none;
+  }
+
+  .logo__mark-bg {
+    fill: var(--color-primary);
+  }
+  .logo--light .logo__mark-bg {
+    fill: var(--color-on-dark);
+  }
+
+  .logo__mark-grid {
+    stroke: var(--color-on-dark);
+  }
+  .logo--light .logo__mark-grid {
+    stroke: var(--color-primary);
+  }
+
+  .logo__mark-cell {
+    fill: var(--color-accent);
+  }
+
+  .logo__words {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+  }
+
+  .logo__name {
+    font-family: var(--font-display);
+    font-size: clamp(0.75rem, 0.5rem + 0.9vw, 0.95rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    white-space: nowrap;
+    line-height: 1.15;
+  }
+  .logo--light .logo__name {
+    color: var(--color-on-dark);
+  }
+
+  .logo--sm .logo__mark {
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+  .logo--sm .logo__name {
+    font-size: 1.05rem;
+  }
+
+  /* Dark mode: accent square + pale grid when inside the header/menu
+     where the surrounding background is dark. */
+  [data-theme='dark'] .site-header .logo__mark-bg,
+  [data-theme='dark'] .site-menu .logo__mark-bg {
+    fill: var(--color-accent);
+  }
+
+  [data-theme='dark'] .site-header .logo__mark-grid,
+  [data-theme='dark'] .site-menu .logo__mark-grid {
+    stroke: var(--color-on-accent);
+  }
+
+  [data-theme='dark'] .site-header .logo__mark-cell,
+  [data-theme='dark'] .site-menu .logo__mark-cell {
+    fill: var(--color-on-accent);
+  }
+
+  .logo__img {
+    height: auto;
+    width: auto;
+    max-height: 2.6rem;
+    max-width: 100%;
+    object-fit: contain;
+    aspect-ratio: auto;
+    flex: none;
+  }
+
+  .logo__img--sm {
+    max-height: 2.1rem;
+  }
+
+  /* Scale the brand down together on very small screens to avoid overflow. */
+  @media (max-width: 400px) {
+    .logo__img:not(.logo__img--sm) {
+      max-height: 2rem;
+    }
+    .logo--sm .logo__name {
+      font-size: 0.95rem;
+    }
+  }
+</style>

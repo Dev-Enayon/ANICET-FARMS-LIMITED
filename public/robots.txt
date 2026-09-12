@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# TODO: Update the Sitemap URL once the production domain is confirmed.
+Sitemap: https://anicetfarms.example/sitemap-index.xml

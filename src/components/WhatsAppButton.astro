@@ -1,0 +1,49 @@
+---
+// Accessible "Chat on WhatsApp" link. Always renders a real <a> (no fake
+// integration, no chatbot) that opens `https://wa.me/...?text=...` with an
+// encoded pre-filled message. The visible label is the accessible name; the
+// icon is decorative.
+//
+// The prefilled message is passed through whatsappLink(), which URL-encodes it.
+
+import { whatsappLink } from '../data/whatsapp';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+
+interface Props {
+  /** Visible + accessible link text. */
+  label?: string;
+  /** Optional custom pre-filled message (URL-encoded automatically). */
+  message?: string;
+  variant?: 'primary' | 'accent' | 'ghost' | 'ghost-dark';
+  size?: 'sm' | 'md' | 'lg';
+  /** Extra attributes, e.g. data-* hooks. */
+  attrs?: Record<string, unknown>;
+}
+
+const {
+  label = 'Chat with ANICET FARMS LIMITED on WhatsApp',
+  message,
+  variant = 'primary',
+  size = 'md',
+  attrs = {},
+} = Astro.props;
+
+const href = whatsappLink(message);
+---
+
+<a
+  {...attrs}
+  class:list={[
+    'btn',
+    `btn--${variant}`,
+    'whatsapp-btn',
+    size === 'lg' && 'btn--lg',
+    size === 'sm' && 'btn--sm',
+  ]}
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <WhatsAppIcon class="whatsapp-btn__icon" />
+  <span>{label}</span>
+</a>

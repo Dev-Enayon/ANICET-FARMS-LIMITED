@@ -1,0 +1,47 @@
+---
+// Inner-page hero band on the dark sable background.
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+}
+
+const { eyebrow, title, lede } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="container">
+    <slot name="breadcrumbs" />
+    <div class="page-hero__copy">
+      {eyebrow && <p class="eyebrow eyebrow--on-dark">{eyebrow}</p>}
+      <h1 class="page-hero__title">{title}</h1>
+      {lede && <p class="page-hero__lede">{lede}</p>}
+      <div class="page-hero__meta">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-hero__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .page-hero__title {
+    font-size: clamp(2.4rem, 5.5vw, 4rem);
+    letter-spacing: -0.03em;
+    max-width: 24ch;
+  }
+
+  .page-hero__lede {
+    color: var(--color-on-dark-dim);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    max-width: 58ch;
+  }
+</style>

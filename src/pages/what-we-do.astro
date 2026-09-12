@@ -1,0 +1,114 @@
+---
+// What We Do — approach, value chain, operating principles, capabilities.
+// Capabilities render from data; nothing is assumed.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Reveal from '../components/Reveal.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ValueChain from '../components/ValueChain.astro';
+import EmptyState from '../components/EmptyState.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { values } from '../data/company';
+import { capabilities } from '../data/services';
+---
+
+<BaseLayout
+  title="What We Do"
+  description="ANICET FARMS LIMITED's approach — a disciplined agricultural value chain and capabilities confirmed by evidence."
+  path="/what-we-do/"
+>
+  <PageHero
+    eyebrow="What We Do"
+    title="A disciplined approach to agriculture."
+    lede="Understanding our approach is the clearest way to see how ANICET FARMS LIMITED intends to work — sourced, produced, controlled, and delivered with integrity."
+  >
+    <Breadcrumbs slot="breadcrumbs" items={[{ name: 'What We Do' }]} />
+    <span class="chip chip--on-dark">Approach</span>
+  </PageHero>
+
+  <ValueChain />
+
+  <!-- Operating principles -->
+  <section class="section">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Principles"
+        title="What we hold ourselves to."
+        lede="Working definitions — to be refined with the company before launch."
+      />
+      <div class="grid-3">
+        {
+          values.map((value, index) => (
+            <Reveal delay={index * 60}>
+              <article class="card">
+                <span class="card__index">{String(index + 1).padStart(2, '0')}</span>
+                <h3>{value.title}</h3>
+                <p>{value.description}</p>
+              </article>
+            </Reveal>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Capabilities -->
+  <section class="section section--tight band band--sand">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Capabilities"
+        title="Confirmed capabilities."
+        lede="Each capability is added only when its scope has been verified. Nothing is assumed."
+      />
+      {
+        capabilities.length > 0 ? (
+          <div class="grid-3">
+            {
+              capabilities.map((capability) => (
+                <article class="card">
+                  <span class="chip chip--accent">{capability.status === 'confirmed' ? 'Confirmed capability' : 'Pending confirmation'}</span>
+                  <h3>{capability.title}</h3>
+                  <p>{capability.description}</p>
+                </article>
+              ))
+            }
+          </div>
+        ) : (
+          <Reveal>
+            <EmptyState
+              title="Verified capabilities are being compiled."
+              note="Once ANICET FARMS LIMITED confirms its activities, each capability will appear here with a dedicated structure for details. Until then, we present a framework rather than assumptions."
+            >
+              <div class="grid-3" style="margin-top:1.25rem">
+                {[0, 1, 2].map((i) => (
+                  <div class="empty-state" aria-hidden="true" style="padding:1.5rem">
+                    <span class="card__index">{String(i + 1).padStart(2, '0')}</span>
+                    <h3 style="font-size:1.05rem">Capability slot</h3>
+                    <p>Title, description, and scope — pending company input.</p>
+                  </div>
+                ))}
+              </div>
+              <p style="margin-top:1.25rem">
+                <!-- TODO: populate src/data/services.ts `capabilities` with verified activities. -->
+                Where a reference is helpful: the conventional agribusiness value chain (inputs →
+                production → processing → quality → distribution → market) is what this framework
+                maps against.
+              </p>
+            </EmptyState>
+          </Reveal>
+        )
+      }
+    </div>
+  </section>
+
+  <CtaBand
+    eyebrow="Let's Talk"
+    title="Need a capability confirmed? Ask us directly."
+    actions={[
+      { label: 'Request information', variant: 'accent', whatsapp: true },
+      { label: 'Products', href: '/products/', variant: 'ghost-dark' },
+    ]}
+  />
+</BaseLayout>
