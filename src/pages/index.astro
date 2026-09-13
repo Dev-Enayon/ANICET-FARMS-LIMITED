@@ -4,7 +4,6 @@
 // ANICET FARMS LIMITED. TODO markers show where verified copy belongs.
 
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AuroraField from '../components/AuroraField.astro';
 import Reveal from '../components/Reveal.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Button from '../components/Button.astro';
@@ -45,7 +44,17 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
         </Reveal>
       </div>
       <Reveal delay={200} class="hero__visual">
-        <AuroraField label="Agricultural enterprise" />
+        <figure class="photo-frame">
+          <img
+            src="/img/hero/hero-farm.jpeg"
+            alt="Green agricultural field landscape"
+            width="1280"
+            height="719"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </figure>
       </Reveal>
     </div>
     <div class="hero__meta">
@@ -177,6 +186,55 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
           </Reveal>
         )
       }
+    </div>
+  </section>
+
+  <!-- ============================================= FARMING OPERATIONS -->
+  <section class="section band band--sand">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Farming Operations"
+        title="Modern agricultural practices."
+        lede="Modern agricultural practices focused on quality, efficiency, and responsible farming."
+      />
+      <div class="grid-2">
+        <Reveal>
+          <article class="feature-card">
+            <figure class="feature-card__media">
+              <img
+                src="/img/farming/farming-operation.jpg"
+                alt="Agricultural machinery operating in a farm field"
+                width="1280"
+                height="720"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+            <div class="feature-card__body">
+              <h3>Agricultural Operations</h3>
+              <p>Farming activities supported by agricultural machinery and field operations.</p>
+            </div>
+          </article>
+        </Reveal>
+        <Reveal delay={100}>
+          <article class="feature-card">
+            <figure class="feature-card__media">
+              <img
+                src="/img/farming/harvesting.jpeg"
+                alt="Harvested crops gathered from the farm"
+                width="1280"
+                height="853"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+            <div class="feature-card__body">
+              <h3>Harvesting</h3>
+              <p>Harvest-stage agricultural produce prepared for the next stage of handling.</p>
+            </div>
+          </article>
+        </Reveal>
+      </div>
     </div>
   </section>
 
