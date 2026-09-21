@@ -1,12 +1,18 @@
 ---
-// Sticky corporate header — desktop nav, accessible mobile <dialog> menu,
-// clear active states, keyboard friendly (dialog provides focus trapping +
-// Escape). No e-commerce cart: this is a corporate site.
+// Sticky corporate header — scrolling announcement bar, two-tier desktop header
+// (brand + actions row over a full-width nav row), compact mobile header
+// (hamburger left, centred brand, WhatsApp action right), and an accessible
+// <dialog> menu. No e-commerce cart: this is a corporate site.
 
 import Logo from './Logo.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import WhatsAppButton from './WhatsAppButton.astro';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import Search from './Search.astro';
+import HeaderIcons from './HeaderIcons.astro';
 import { primaryNav } from '../data/navigation';
+import { whatsappLink } from '../data/whatsapp';
+import { cartCount } from '../data/shop';
 
 interface Props {
   currentPath?: string;
@@ -15,49 +21,130 @@ interface Props {
 const { currentPath = '/' } = Astro.props;
 
 const isActive = (match: string) => currentPath.startsWith(match);
+
+const announcement =
+  'WELCOME TO ANICET FARMS LIMITED - WE SPECIALISE IN ALL FORM OF AFRICAN EXOTIC FOODS';
 ---
 
+<div class="announce" role="region" aria-label="Announcement">
+  <div class="announce__track">
+    {
+      // Repeated identical copies form a seamless, gap-free loop at every
+      // viewport width. All but the first are hidden from assistive tech.
+      Array.from({ length: 6 }, (_, i) => (
+        <p
+          class="announce__item"
+          aria-hidden={i > 0 ? 'true' : undefined}
+        >
+          {announcement}
+        </p>
+      ))
+    }
+  </div>
+</div>
+
 <header class="site-header">
-  <div class="container site-header__inner">
+  <!-- Desktop / tablet: brand row + search + actions -->
+  <div class="container site-header__row site-header__row--main">
     <a href="/" class="site-header__brand" aria-label="ANICET FARMS LIMITED — home">
       <Logo />
     </a>
 
-    <nav class="site-header__nav" aria-label="Primary">
-      <ul class="nav-list">
-        {
-          primaryNav.map((item) => (
-            <li>
-              <a
-                class="nav-link"
-                href={item.href}
-                aria-current={isActive(item.match) ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
+    <div class="site-header__searchslot">
+      <Search />
+    </div>
 
     <div class="site-header__actions">
       <ThemeToggle placement="header" />
       <WhatsAppButton label="Get In Touch" variant="primary" />
-      <button
-        class="nav-toggle"
-        data-nav-open
-        type="button"
-        aria-haspopup="dialog"
-        aria-controls="site-menu"
-        aria-expanded="false"
-      >
-        <span class="visually-hidden">Open navigation menu</span>
-        <span class="nav-toggle__bar" aria-hidden="true"></span>
-        <span class="nav-toggle__bar" aria-hidden="true"></span>
-        <span class="nav-toggle__bar" aria-hidden="true"></span>
-      </button>
+      <HeaderIcons />
     </div>
+  </div>
+
+  <!-- Desktop / tablet: full-width centred nav row -->
+  <div class="site-header__navwrap">
+    <div class="container">
+      <nav class="site-header__nav" aria-label="Primary">
+        <ul class="nav-list">
+          {
+            primaryNav.map((item) => (
+              <li>
+                <a
+                  class="nav-link"
+                  href={item.href}
+                  aria-current={isActive(item.match) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Mobile: hamburger left, centred brand, WhatsApp action right -->
+  <div class="container site-header__row site-header__row--mobile">
+    <button
+      class="nav-toggle"
+      data-nav-open
+      type="button"
+      aria-haspopup="dialog"
+      aria-controls="site-menu"
+      aria-expanded="false"
+    >
+      <span class="visually-hidden">Open navigation menu</span>
+      <span class="nav-toggle__bar" aria-hidden="true"></span>
+      <span class="nav-toggle__bar" aria-hidden="true"></span>
+      <span class="nav-toggle__bar" aria-hidden="true"></span>
+    </button>
+
+    <a href="/" class="site-header__mobile-brand" aria-label="ANICET FARMS LIMITED — home">
+      <Logo size="sm" />
+    </a>
+
+    <div class="site-header__mobile-actions">
+      <a
+        class="site-header__mobile-wa"
+        href={whatsappLink()}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with ANICET FARMS LIMITED on WhatsApp"
+      >
+        <WhatsAppIcon class="site-header__mobile-wa-icon" size={20} />
+      </a>
+      <a
+        class="site-header__mobile-cart"
+        href="/cart"
+        aria-label="Shopping cart"
+      >
+        <svg
+          class="site-header__mobile-cart-icon"
+          viewBox="0 0 24 24"
+          width="26"
+          height="26"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M5 8h14l-1.6 10.2A2 2 0 0 1 15.4 20H8.6a2 2 0 0 1-2-1.8L5 8z" />
+          <path d="M8 8c0-2.2 1.8-4 4-4s4 1.8 4 4" />
+          <path d="M9.5 12.5v3M14.5 12.5v3" />
+        </svg>
+        <span class="mobile-cart__badge" data-badge="cart">{cartCount}</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Mobile: full-width search bar + account/wishlist/cart icons -->
+  <div class="container site-header__row site-header__row--search">
+    <Search stack />
+    <HeaderIcons />
   </div>
 
   <dialog class="site-menu" id="site-menu" data-nav-dialog aria-label="Site navigation">
@@ -71,6 +158,15 @@ const isActive = (match: string) => currentPath.startsWith(match);
     </div>
     <div class="site-menu__body">
       <ul class="site-menu__list">
+        <li>
+          <a
+            class="site-menu__link"
+            href="/"
+            aria-current={currentPath === '/' ? 'page' : undefined}
+          >
+            Home
+          </a>
+        </li>
         {
           primaryNav.map((item) => (
             <li>
@@ -85,6 +181,35 @@ const isActive = (match: string) => currentPath.startsWith(match);
           ))
         }
       </ul>
+
+      <div class="site-menu__categories">
+        <h2 class="site-menu__subhead">Categories</h2>
+        <p class="site-menu__note">
+          Product categories will appear here once the catalogue is compiled and verified.
+        </p>
+      </div>
+
+      <ul class="site-menu__list site-menu__list--meta">
+        <li>
+          <a
+            class="site-menu__meta-link"
+            href="/terms/"
+            aria-current={isActive('/terms') ? 'page' : undefined}
+          >
+            Terms &amp; Conditions
+          </a>
+        </li>
+        <li>
+          <a
+            class="site-menu__meta-link"
+            href="/privacy-policy/"
+            aria-current={isActive('/privacy-policy') ? 'page' : undefined}
+          >
+            Privacy Policy
+          </a>
+        </li>
+      </ul>
+
       <div class="site-menu__cta-row">
         <ThemeToggle placement="menu" />
         <WhatsAppButton

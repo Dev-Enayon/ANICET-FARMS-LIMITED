@@ -24,8 +24,8 @@ Two non-negotiable principles guide the whole site:
   back to a pre-filled `mailto:` — or says the contact destination is unset.
 
 The site intentionally exposes its structure to future content: company data,
-products, statistics, leadership, and insights all flow through typed data files
-so that verified material can be added without redesign.
+products, and other verified material all flow through typed data files so that
+verified content can be added without redesign.
 
 ---
 
@@ -90,6 +90,11 @@ content can never force a track wider than its container.
 - `720px` — editorial `split-grid` / `split-grid--reverse` stack to one column.
 - `960px` — header swaps desktop nav + hamburger for the `<dialog>` mobile menu
   (theme switch hides from the header and is offered inside the menu instead).
+- `767px` — mobile storefront activates: green marquee announcement, standalone
+  logo-only header with hamburger menu + blush cart button, left slide-out drawer
+  (native `<dialog>`), fixed 4-tab bottom nav, full-screen search overlay, home
+  page hero slider + "Fresh Products" feature section, dismissible blue info
+  banner. Desktop layout (≥768px) is completely untouched.
 - `1200px` — value chain drops from six to three columns; header CTA hides on
   medium screens.
 - `900px` — value chain (3→2), footer (4→2 columns), contact grid (→1).
@@ -162,6 +167,11 @@ anise-farm/
 | `ContactForm.astro` | Enquiry form wired to `src/scripts/forms.ts` |
 | `WhatsAppButton.astro` / `WhatsAppIcon.astro` / `WhatsAppFloating.astro` | Verified WhatsApp CTA: header/CTA/404 buttons, floating pulsing dot on every page (`src/data/whatsapp.ts`) |
 | `ThemeToggle.astro` | Light/dark switch — one control (role="switch"), header (desktop) + mobile menu variants, wired to `src/scripts/theme.ts` |
+| `HeaderIcons.astro` | Account/wishlist/cart icon cluster + live count badges (`data-badge`), fed by `src/data/shop.ts` |
+| `Search.astro` | Storefront search modal (stack + overlay variants); input + JSON index live search from `src/scripts/search.ts` |
+| `BottomNav.astro` | Mobile-only (≤767px) fixed 4-tab bar — Shop / My Account / Search / Wishlist; gold active bar, badge counts, full-screen search overlay |
+| `MobileHeroSlider.astro` | Mobile-only (≤767px) 560px swipeable hero slider (pointer + dots, lazy images, loader) on the home page |
+| `MobileFeatures.astro` | Mobile-only (≤767px) "Fresh Products" feature section (3 focused selling points) on the home page |
 
 ---
 
@@ -172,14 +182,13 @@ in one place without touching markup.
 
 | File | Exports | Status |
 | --- | --- | --- |
-| `types.ts` | Shared domain types (Value, Capability, Product, Statistic, Insight, etc.) | Complete |
+| `types.ts` | Shared domain types (Value, Capability, Product, etc.) | Complete |
 | `site.ts` | `siteUrl` (placeholder domain), default OG image + alt | **TODO: real domain** |
 | `company.ts` | `company` (legalName, operatingName, industry, shortStatement + optional registration/address/phone/email; `mission`, `vision` (`null`), `values`, `contactChannels` | legalName/operatingName/industry verified; rest **TODO** |
 | `navigation.ts` | `primaryNav`, `ctaNav`, `footerNav` | Complete |
 | `services.ts` | `capabilities` (`[]`), `valueChain` (6 stages, all `unconfirmed`), `valueChainNote` | capabilities **TODO**; chain is framework |
 | `products.ts` | `products` (`[]`), `productEnquiryLabel` (`Request information`), `catalogueNote` | products **TODO** |
-| `impact.ts` | `statistics` (`[]`), `reportAreas` (4 commitment areas), `metricRegistry` (6 labels + definitions) | statistics **TODO** |
-| `insights.ts` | `insights` (`[]`), `topics` (4 intended topics) | insights **TODO** |
+| `shop.ts` | `currency` (`₦`), `wishlistCount`, `cartCount`, `cartTotal` — badges/floating bar totals are static until a backend exists | currency fixed; counts pretend `0` |
 | `people.ts` | `locations` (`[]`), `leadership` (`[]`), `testimonials` (`[]`) | all **TODO** |
 
 ### The no-hallucination contract
@@ -188,8 +197,6 @@ in one place without touching markup.
 - `mission`/`vision` are `string | null`; `null` renders a placeholder phrase.
 - Value-chain stages are `unconfirmed` until marked `confirmed` (dashed → solid
   visual treatment automatically).
-- Statistics only render when `statistics` is populated; the "Mirror" registry
-  communicates what *will* be reported without inventing numbers.
 
 ---
 
@@ -203,8 +210,6 @@ Astro static output, `trailingSlash: 'ignore'`, `build.format: 'directory'`.
 | `/about/` | `about.astro` | Story slot, mission/vision, values, leadership (empty state), operations |
 | `/what-we-do/` | `what-we-do.astro` | Value chain, principles, capabilities |
 | `/products/` | `products.astro` | Enquiry-first catalogue + sourcing transparency |
-| `/impact/` | `impact.astro` | Statistic band (hidden until verified), reporting areas, metric registry |
-| `/insights/` | `insights.astro` | Topics + publications (empty until real articles) |
 | `/contact/` | `contact.astro` | Contact channels (placeholders) + working enquiry form |
 | `/privacy-policy/` | `privacy-policy.astro` | **Placeholder** — needs legal drafting |
 | `/terms/` | `terms.astro` | **Placeholder** — needs legal drafting |
@@ -234,7 +239,16 @@ Sitemap is generated automatically: `dist/sitemap-index.xml`.
 - **Honest content system** — placeholders everywhere real data is missing.
 - **Native `<dialog>` mobile menu** — free focus management, Escape-to-close,
   backdrop click to close, body scroll lock, aria-expanded wiring
-  (`src/scripts/nav.ts`).
+  (`src/scripts/nav.ts`). On phones (≤767px) it restyles into a left slide-out
+  storefront drawer (Home + primary nav + categories + legal links).
+- **Mobile storefront (≤767px)** — green marquee announcement bar, logo-only
+  header with hamburger + circular blush cart button (gold count badge), fixed
+  4-tab bottom nav (Shop / My Account / Search / Wishlist; icons + gold active
+  bar + red wishlist badge), full-screen search overlay (autofocus, scroll lock,
+  Escape), swipeable hero slider (`MobileHeroSlider`), "Fresh Products" feature
+  section, and a dismissible blue info banner persisted in
+  `localStorage` (`anicet-info-banner-dismissed`, `src/scripts/nav.ts`). The
+  desktop layout at 768px+ is untouched.
 - **Enquiry form** (`src/scripts/forms.ts`): strict client-side validation,
   inline field errors with `aria-invalid`, focus management on invalid submit,
   real POST when configured, honest `mailto:` fallback otherwise.
@@ -387,15 +401,12 @@ An ANICET FARMS LIMITED stakeholder must supply verified values for:
 5. **Value chain** — which of the 6 stages are real, inapplicable stages removed
    (`services.valueChain` status fields).
 6. **Products** — names, categories, packaging, units, availability (`products`).
-7. **Statistics** — production area, volumes, years of operation, headcount,
-   locations, partners (`impact.statistics`).
-8. **Leadership** — names, roles, bios, photos (`people.leadership`).
-9. **Locations** (`people.locations`) and **testimonials** (`people.testimonials`).
-10. **Insights** — real, finalised articles only (`insights.insights`).
-11. **Logo variants** — a light/white version of the emblem for dark surfaces, and
-    **photography** (replace `AuroraField` artwork).
-12. **Legal review** for privacy policy and terms.
-13. **Refine wording** of short statement, values, and placeholders with the company.
+7. **Leadership** — names, roles, bios, photos (`people.leadership`).
+8. **Locations** (`people.locations`) and **testimonials** (`people.testimonials`).
+9. **Logo variants** — a light/white version of the emblem for dark surfaces, and
+   **photography** (replace `AuroraField` artwork).
+10. **Legal review** for privacy policy and terms.
+11. **Refine wording** of short statement, values, and placeholders with the company.
 
 ---
 

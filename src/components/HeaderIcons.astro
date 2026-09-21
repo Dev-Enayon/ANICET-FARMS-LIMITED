@@ -1,0 +1,68 @@
+---
+// Account / wishlist / cart icon cluster for the header — mounted after the
+// WhatsApp block on desktop and beside the stacked search bar on mobile.
+// Placeholder routes (no account/wishlist/cart pages exist yet); counts and
+// the cart total come from src/data/shop.ts (currently honest zeros).
+
+import { wishlistCount, cartCount, cartTotal } from '../data/shop';
+---
+
+<div class="header-icons">
+  <a class="icon-btn icon-btn--account" href="/account" aria-label="My account">
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M20 21a8 8 0 0 0-16 0" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  </a>
+
+  <a class="icon-btn icon-btn--wishlist" href="/wishlist" aria-label="Wishlist">
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z" />
+    </svg>
+    <span class="icon-btn__badge" data-badge="wishlist">{wishlistCount}</span>
+  </a>
+
+  <a class="icon-btn icon-btn--cart" href="/cart" aria-label="Cart">
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.7"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M5 8h14l-1.6 10.2A2 2 0 0 1 15.4 20H8.6a2 2 0 0 1-2-1.8L5 8z" />
+      <path d="M8 8c0-2.2 1.8-4 4-4s4 1.8 4 4" />
+      <path d="M9.5 12.5v3M14.5 12.5v3" />
+    </svg>
+    <span class="icon-btn__badge" data-badge="cart">{cartCount}</span>
+  </a>
+
+  <span class="header-icons__total">{cartTotal}</span>
+</div>

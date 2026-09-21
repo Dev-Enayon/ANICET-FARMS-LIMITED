@@ -24,6 +24,9 @@ const htmlFiles = files.filter((f) => f.endsWith('.html'));
 const problems = [];
 const seen = new Map();
 
+// Intentional placeholders for commerce routes that do not exist yet.
+const PLACEHOLDER_ROUTES = new Set(['/account', '/wishlist', '/cart']);
+
 for (const file of htmlFiles) {
   const html = readFileSync(file, 'utf8');
   const refs = [
@@ -51,6 +54,7 @@ function check(raw, file) {
   }
   const clean = raw.split(/[?#]/)[0];
   if (!clean) return;
+  if (PLACEHOLDER_ROUTES.has(clean.replace(/\/$/, ''))) return;
 
   // The 404 page's canonical is /404/ but the emitted file is 404.html.
   if (clean === '/404/' || clean === '/404') {

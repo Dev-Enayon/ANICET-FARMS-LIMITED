@@ -1,0 +1,134 @@
+---
+// Mobile-only hero slider (max-width: 767px). Real site imagery reused as
+// slides; no invented pictures. The desktop hero is untouched — this section
+// is hidden above the mobile breakpoint.
+
+const slides = [
+  {
+    src: '/img/hero/hero-farm.jpeg',
+    width: 1280,
+    height: 719,
+    alt: 'Green agricultural field landscape',
+  },
+  {
+    src: '/img/farming/farming-operation.jpg',
+    width: 1280,
+    height: 720,
+    alt: 'Agricultural machinery operating in a farm field',
+  },
+  {
+    src: '/img/farming/harvesting.jpeg',
+    width: 1280,
+    height: 853,
+    alt: 'Harvested crops gathered from the farm',
+  },
+  {
+    src: '/img/farming/farm-field1.jpeg',
+    width: 1280,
+    height: 720,
+    alt: 'Prepared farm field ready for cultivation',
+  },
+];
+---
+
+<section
+  class="mobile-hero"
+  data-hero-slider
+  aria-label="Featured highlights"
+  aria-roledescription="carousel"
+>
+  <div class="mobile-hero__frame" data-hero-frame>
+    <div class="mobile-hero__track" data-hero-track>
+      {
+        slides.map((slide, index) => (
+          <figure class="mobile-hero__slide" data-slide>
+            <img
+              class="mobile-hero__img"
+              src={slide.src}
+              alt={slide.alt}
+              width={slide.width}
+              height={slide.height}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              data-slide-img
+            />
+          </figure>
+        ))
+      }
+    </div>
+    <div class="mobile-hero__loader" data-hero-loader aria-hidden="true">
+      <span class="mobile-hero__spinner"></span>
+    </div>
+  </div>
+  <div class="mobile-hero__dots" data-hero-dots>
+    {
+      slides.map((_, index) => (
+        <button
+          class="mobile-hero__dot"
+          type="button"
+          data-hero-dot
+          aria-label={`Go to slide ${index + 1}`}
+          aria-current={index === 0 ? 'true' : undefined}
+        ></button>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  const slider = document.querySelector<HTMLElement>('[data-hero-slider]');
+  if (slider) {
+    const track = slider.querySelector<HTMLElement>('[data-hero-track]');
+    const frame = slider.querySelector<HTMLElement>('[data-hero-frame]');
+    const dots = Array.from(slider.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
+    const imgs = Array.from(slider.querySelectorAll<HTMLImageElement>('[data-slide-img]'));
+    const total = dots.length;
+    let index = 0;
+    let pointerX = 0;
+    let dragging = false;
+
+    const goTo = (next: number) => {
+      index = (next + total) % total;
+      track!.style.transform = `translateX(-${index * 100}%)`;
+      dots.forEach((dot, i) => {
+        dot.setAttribute('aria-current', String(i === index));
+      });
+      const img = imgs[index];
+      if (img) img.loading = 'eager';
+    };
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+
+    // Hide the loading spinner once the first image (or a fallback timeout) is
+    // ready, revealing the slider over the warm-gray loading surface.
+    const reveal = () => slider.classList.add('is-loaded');
+    const first = imgs[0];
+    if (first?.complete) reveal();
+    else first?.addEventListener('load', reveal, { once: true });
+    window.setTimeout(reveal, 2500);
+
+    // Swipe with Pointer Events; vertical panning (page scroll) is left to the
+    // browser via touch-action: pan-y.
+    if (frame) {
+      frame.addEventListener('pointerdown', (event) => {
+        dragging = true;
+        pointerX = event.clientX;
+      });
+      frame.addEventListener('pointermove', (event) => {
+        if (dragging) {
+          const delta = event.clientX - pointerX;
+          if (Math.abs(delta) > 48) {
+            dragging = false;
+            goTo(delta < 0 ? index + 1 : index - 1);
+          }
+        }
+      });
+      frame.addEventListener('pointerup', () => {
+        dragging = false;
+      });
+      frame.addEventListener('pointercancel', () => {
+        dragging = false;
+      });
+    }
+  }
+</script>

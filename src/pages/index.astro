@@ -10,6 +10,8 @@ import Button from '../components/Button.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import ValueChain from '../components/ValueChain.astro';
 import CtaBand from '../components/CtaBand.astro';
+import MobileHeroSlider from '../components/MobileHeroSlider.astro';
+import MobileFeatures from '../components/MobileFeatures.astro';
 import { company, mission, vision, values } from '../data/company';
 import { capabilities } from '../data/services';
 
@@ -23,6 +25,16 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
 >
   <!-- =========================================================== HERO -->
   <section class="hero">
+    <img
+      class="hero__bg"
+      src="/img/hero/hero-farm.jpeg"
+      alt="Green agricultural field landscape"
+      width="1280"
+      height="719"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+    />
     <div class="container hero__inner">
       <div class="hero__copy">
         <Reveal>
@@ -43,19 +55,6 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
           </div>
         </Reveal>
       </div>
-      <Reveal delay={200} class="hero__visual">
-        <figure class="photo-frame">
-          <img
-            src="/img/hero/hero-farm.jpeg"
-            alt="Green agricultural field landscape"
-            width="1280"
-            height="719"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          />
-        </figure>
-      </Reveal>
     </div>
     <div class="hero__meta">
       <div class="container hero__meta-inner">
@@ -72,6 +71,11 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
       </div>
     </div>
   </section>
+
+  <!-- Mobile storefront: hero slider + features (max-width: 767px only).
+       The desktop hero above stays exactly as it is. -->
+  <MobileHeroSlider />
+  <MobileFeatures />
 
   <!-- ================================================= WHO WE ARE -->
   <section class="section" id="who-we-are">
@@ -109,9 +113,7 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
     </div>
   </section>
 
-  <!-- ================================================== OPTIONAL STAT PANEL
-       Statistics are hidden unless verified. The registry communicates intent
-       without ever inventing numbers. -->
+  <!-- ================================================== COMPANY VALUES -->
   <section class="section--tight band band--sand">
     <div class="container">
       <SectionHeading
@@ -129,16 +131,6 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
               </div>
             ))
           }
-        </div>
-      </Reveal>
-      <Reveal delay={100}>
-        <div class="empty-state" style="margin-top:2rem">
-          <h3>Verified metrics will appear here when available.</h3>
-          <p>
-            Production area, output volumes, years of operation, headcount and partnerships
-            will be published once the company's figures are confirmed. No estimates are shown.
-            <!-- TODO: populate src/data/impact.ts `statistics` with verified values. -->
-          </p>
         </div>
       </Reveal>
     </div>
@@ -233,6 +225,37 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
               <p>Harvest-stage agricultural produce prepared for the next stage of handling.</p>
             </div>
           </article>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== PRODUCTS -->
+  <section class="section">
+    <div class="container">
+      <div class="split-grid">
+        <div>
+          <SectionHeading
+            eyebrow="Products"
+            title="An honest product directory."
+            lede="The ANICET FARMS LIMITED catalogue will be published here once the company confirms its offer. Nothing is listed as fact before it is verified."
+          />
+        </div>
+        <Reveal delay={120}>
+          <div class="card">
+            <p class="eyebrow">Catalogue status</p>
+            <h3 class="display-3" style="margin-top:1.25rem">Being compiled, in full.</h3>
+            <p style="margin-top:1rem">
+              Product types, grades and availability will be added when confirmed.
+              Until then the product page states this openly instead of showing
+              estimates as fact.
+              <!-- TODO: populate src/data/products.ts with verified products. -->
+            </p>
+            <div class="cta-row">
+              <Button href="/products/" variant="ghost" arrow>View the products page</Button>
+              <WhatsAppButton label="Request the product list" variant="primary" />
+            </div>
+          </div>
         </Reveal>
       </div>
     </div>

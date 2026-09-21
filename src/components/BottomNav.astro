@@ -1,0 +1,152 @@
+---
+// Fixed mobile bottom navigation (max-width: 767px only). Four equal-width
+// tabs — Shop, My Account, Search, Wishlist — with real routes where pages
+// exist and intentional placeholders for account/cart for future commerce.
+// Wishlist uses the real count from src/data/shop.ts. The Search tab opens a
+// full-screen overlay reusing the existing <Search stack /> bar + scripts.
+
+import Search from './Search.astro';
+import { wishlistCount } from '../data/shop';
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+
+const isActive = (match: string) =>
+  match === '/' ? currentPath === '/' : match !== '' && currentPath.startsWith(match);
+
+const tabs = [
+  { id: 'shop', label: 'Shop', href: '/products/', match: '/products' },
+  { id: 'account', label: 'My Account', href: '/account/', match: '/account' },
+  { id: 'search', label: 'Search', action: true, match: '' },
+  { id: 'wishlist', label: 'Wishlist', href: '/wishlist/', match: '/wishlist' },
+];
+---
+
+<nav class="bottom-nav" aria-label="Mobile navigation">
+  <ul class="bottom-nav__list">
+    {
+      tabs.map((tab) => (
+        <li>
+          {
+            tab.action ? (
+              <button
+                class="bottom-nav__link"
+                type="button"
+                data-search-open
+                aria-haspopup="dialog"
+                aria-controls="mobile-search-overlay"
+                aria-expanded="false"
+              >
+                <span class="bottom-nav__icon-wrap">
+                  <svg
+                    class="bottom-nav__icon"
+                    viewBox="0 0 24 24"
+                    width="32"
+                    height="32"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    {
+                      tab.id === 'search' && (
+                        <>
+                          <circle cx="11" cy="11" r="7" />
+                          <path d="M20 20l-3.8-3.8" />
+                        </>
+                      )
+                    }
+                  </svg>
+                </span>
+                <span class="bottom-nav__label">{tab.label}</span>
+              </button>
+            ) : (
+              <a
+                class="bottom-nav__link"
+                href={tab.href}
+                aria-current={isActive(tab.match) ? 'page' : undefined}
+              >
+                <span class="bottom-nav__icon-wrap">
+                  <svg
+                    class="bottom-nav__icon"
+                    viewBox="0 0 24 24"
+                    width="32"
+                    height="32"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    {
+                      tab.id === 'shop' && (
+                        <path d="M3.5 9.5 5 3.5h14l1.5 6M4 9.5V20h16V9.5M9.5 20v-6h5v6" />
+                      )
+                    }
+                    {
+                      tab.id === 'account' && (
+                        <>
+                          <circle cx="12" cy="8" r="4" />
+                          <path d="M4 21c0-3.6 3.6-5.5 8-5.5s8 1.9 8 5.5" />
+                        </>
+                      )
+                    }
+                    {
+                      tab.id === 'wishlist' && (
+                        <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z" />
+                      )
+                    }
+                  </svg>
+                  {
+                    tab.id === 'wishlist' && (
+                      <span class="bottom-nav__badge" data-badge="wishlist">
+                        {wishlistCount}
+                      </span>
+                    )
+                  }
+                </span>
+                <span class="bottom-nav__label">{tab.label}</span>
+              </a>
+            )
+          }
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<!-- Full-screen search overlay opened by the Search tab -->
+<div class="search-overlay" id="mobile-search-overlay" data-search-overlay hidden>
+  <div class="search-overlay__panel">
+    <Search stack />
+    <button
+      class="search-overlay__close"
+      type="button"
+      data-search-close
+      aria-label="Close search"
+    >
+      <span class="visually-hidden">Close search</span>
+      <svg
+        viewBox="0 0 24 24"
+        width="26"
+        height="26"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M5 5l14 14M19 5L5 19" />
+      </svg>
+    </button>
+  </div>
+</div>

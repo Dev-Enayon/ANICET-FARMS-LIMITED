@@ -7,6 +7,7 @@ import Seo from '../components/Seo.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppFloating from '../components/WhatsAppFloating.astro';
+import BottomNav from '../components/BottomNav.astro';
 
 import '../styles/global.css';
 
@@ -64,14 +65,29 @@ const {
 
     <Footer />
 
+    <!-- Dismissible storefront banner (mobile only), fixed above the bottom nav -->
+    <div class="info-banner" data-info-banner>
+      <p class="info-banner__row">
+        <span class="info-banner__icon" aria-hidden="true">i</span>
+        <span class="info-banner__text">Fresh vegetable online!</span>
+      </p>
+      <button class="info-banner__dismiss" type="button" data-info-dismiss>
+        Dismiss
+      </button>
+    </div>
+
+    <BottomNav currentPath={path} />
+
     <WhatsAppFloating />
 
     <script>
-      import { initNav } from '../scripts/nav';
+      import { initNav, initMobileSearchOverlay, initInfoBanner } from '../scripts/nav';
       import { initReveal } from '../scripts/reveal';
       import { initThemeToggle } from '../scripts/theme';
 
       initNav();
+      initMobileSearchOverlay();
+      initInfoBanner();
       initReveal();
       initThemeToggle();
     </script>

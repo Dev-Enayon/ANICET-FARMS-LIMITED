@@ -32,6 +32,14 @@ export function initNav(): void {
   close.addEventListener('click', closeMenu);
   dialog.addEventListener('close', closeMenu);
 
+  // The fixed bottom navigation's "Menu" slot opens the same dialog.
+  document.querySelectorAll<HTMLButtonElement>('[data-bottom-menu]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      if (!dialog.open) openMenu();
+      trigger.setAttribute('aria-expanded', String(dialog.open));
+    });
+  });
+
   // Close when the backdrop itself is clicked.
   dialog.addEventListener('click', (event) => {
     const rect = dialog.getBoundingClientRect();
@@ -49,5 +57,60 @@ export function initNav(): void {
       if (link.target === '_blank') return;
       closeMenu();
     });
+  });
+}
+
+// Full-screen mobile search overlay, opened by the bottom navigation's Search
+// tab. Reuses the existing [data-search-form] inputs (bound by search.ts).
+export function initMobileSearchOverlay(): void {
+  const overlay = document.querySelector<HTMLElement>('[data-search-overlay]');
+  if (!overlay) return;
+  const openButtons = Array.from(document.querySelectorAll<HTMLElement>('[data-search-open]'));
+  const closeButton = document.querySelector<HTMLElement>('[data-search-close]');
+  const input = overlay.querySelector<HTMLInputElement>('[data-search-input]');
+
+  const openOverlay = () => {
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    openButtons.forEach((button) => button.setAttribute('aria-expanded', 'true'));
+    window.setTimeout(() => input?.focus(), 0);
+  };
+
+  const closeOverlay = () => {
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+    openButtons.forEach((button) => button.setAttribute('aria-expanded', 'false'));
+  };
+
+  openButtons.forEach((button) => button.addEventListener('click', openOverlay));
+  closeButton?.addEventListener('click', closeOverlay);
+  overlay.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeOverlay();
+  });
+  overlay.addEventListener('click', (event) => {
+    if (event.target === overlay) closeOverlay();
+  });
+}
+
+// Dismissible storefront info banner. Hides on demand and remembers the choice
+// in localStorage (wrapped in try/catch so storage failures never break it).
+export function initInfoBanner(): void {
+  const banner = document.querySelector<HTMLElement>('[data-info-banner]');
+  if (!banner) return;
+  const KEY = 'anicet-info-banner-dismissed';
+
+  try {
+    if (localStorage.getItem(KEY) === '1') banner.hidden = true;
+  } catch {
+    // Storage unavailable — keep the banner visible.
+  }
+
+  banner.querySelector<HTMLElement>('[data-info-dismiss]')?.addEventListener('click', () => {
+    banner.hidden = true;
+    try {
+      localStorage.setItem(KEY, '1');
+    } catch {
+      // Ignore persistence failures.
+    }
   });
 }

@@ -1,0 +1,72 @@
+---
+// Product search bar — a real client-side filter over the same `products`
+// data the catalogue page renders from. No separate search index, no invented
+// results: the list is serialised into the page at build time, so confirmed
+// products appear automatically once they are added to products.ts.
+//
+// Two variants of one search bar:
+//  - default: centred pill in the desktop header row (max 545px)
+//  - stack:   full-width pill below the compact mobile header row
+// The search index element and bootstrap script are emitted once (desktop
+// variant); initSearch() binds every [data-search-form] on the page.
+
+import { products } from '../data/products';
+
+interface Props {
+  /** Renders the full-width stacked variant used by the mobile header. */
+  stack?: boolean;
+}
+
+const { stack = false } = Astro.props;
+
+const searchData = JSON.stringify(products).replace(/</g, '\\u003c');
+---
+
+{!stack && <script is:inline type="application/json" data-search-index set:html={searchData} />}
+
+<div class={stack ? 'searchbar searchbar--stack' : 'searchbar searchbar--inline'}>
+  <form class="searchbar__form" role="search" action="/products/" method="get" data-search-form>
+    <svg
+      class="searchbar__icon"
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="11" cy="11" r="7" />
+      <path d="M20 20l-3.8-3.8" />
+    </svg>
+    <input
+      class="searchbar__input"
+      type="search"
+      name="q"
+      placeholder="Search products…"
+      autocomplete="off"
+      spellcheck="false"
+      aria-label="Search products"
+      data-search-input
+    />
+    <button class="searchbar__submit" type="submit" data-search-submit>
+      Search
+    </button>
+  </form>
+  <div class="searchbar__panel" data-search-panel hidden>
+    <p class="searchbar__status" data-search-status aria-live="polite">
+      Start typing to search the product catalogue.
+    </p>
+    <div data-search-results></div>
+  </div>
+</div>
+
+{!stack && (
+  <script>
+    import { initSearch } from '../scripts/search';
+
+    initSearch();
+  </script>
+)}
