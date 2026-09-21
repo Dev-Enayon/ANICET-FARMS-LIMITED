@@ -23,15 +23,6 @@ export interface ValueChainStage {
   status: VerificationStatus;
 }
 
-export interface Statistic {
-  id: string;
-  label: string;
-  value?: number | string;
-  prefix?: string;
-  suffix?: string;
-  note?: string;
-}
-
 export interface Product {
   id: string;
   name: string;
@@ -63,13 +54,4 @@ export interface Testimonial {
   quote: string;
   author: string;
   role?: string;
-}
-
-export interface Insight {
-  slug: string;
-  title: string;
-  excerpt: string;
-  date: string; // ISO 8601
-  published: boolean;
-  category: string;
 }

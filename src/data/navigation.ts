@@ -12,8 +12,6 @@ export const primaryNav: NavItem[] = [
   { label: 'About', href: '/about/', match: '/about' },
   { label: 'What We Do', href: '/what-we-do/', match: '/what-we-do' },
   { label: 'Products', href: '/products/', match: '/products' },
-  { label: 'Impact', href: '/impact/', match: '/impact' },
-  { label: 'Insights', href: '/insights/', match: '/insights' },
   { label: 'Contact', href: '/contact/', match: '/contact' },
 ];
 
@@ -28,8 +26,6 @@ export const footerNav: FooterColumn[] = [
     links: [
       { label: 'About', href: '/about/', match: '/about' },
       { label: 'What We Do', href: '/what-we-do/', match: '/what-we-do' },
-      { label: 'Impact', href: '/impact/', match: '/impact' },
-      { label: 'Insights', href: '/insights/', match: '/insights' },
     ],
   },
   {
