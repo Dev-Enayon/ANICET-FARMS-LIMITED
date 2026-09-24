@@ -1,32 +1,21 @@
 ---
-// Mobile-only hero slider (max-width: 767px). Real site imagery reused as
-// slides; no invented pictures. The desktop hero is untouched — this section
-// is hidden above the mobile breakpoint.
+// Mobile-only hero carousel (max-width: 767px). Uses the same two owner-supplied
+// hero photographs as the desktop hero, driven by the shared fade carousel
+// (autoplay, Previous/Next, indicators, swipe, reduced-motion). Hidden above
+// the mobile breakpoint.
 
 const slides = [
   {
-    src: '/img/hero/hero-farm.jpeg',
-    width: 1280,
-    height: 719,
-    alt: 'Green agricultural field landscape',
-  },
-  {
-    src: '/img/farming/farming-operation.jpg',
+    src: '/img/hero/hero-vegetables.jpeg',
     width: 1280,
     height: 720,
-    alt: 'Agricultural machinery operating in a farm field',
+    alt: 'Fresh green vegetables growing in an agricultural field',
   },
   {
-    src: '/img/farming/harvesting.jpeg',
-    width: 1280,
-    height: 853,
-    alt: 'Harvested crops gathered from the farm',
-  },
-  {
-    src: '/img/farming/farm-field1.jpeg',
+    src: '/img/hero/hero-meat-seafood.jpeg',
     width: 1280,
     height: 720,
-    alt: 'Prepared farm field ready for cultivation',
+    alt: 'Fresh meat, seafood, poultry and eggs',
   },
 ];
 ---
@@ -34,101 +23,79 @@ const slides = [
 <section
   class="mobile-hero"
   data-hero-slider
-  aria-label="Featured highlights"
-  aria-roledescription="carousel"
+  data-hero-carousel
+  aria-label="Featured imagery of fresh produce"
 >
-  <div class="mobile-hero__frame" data-hero-frame>
-    <div class="mobile-hero__track" data-hero-track>
-      {
-        slides.map((slide, index) => (
-          <figure class="mobile-hero__slide" data-slide>
-            <img
-              class="mobile-hero__img"
-              src={slide.src}
-              alt={slide.alt}
-              width={slide.width}
-              height={slide.height}
-              loading={index === 0 ? 'eager' : 'lazy'}
-              decoding="async"
-              data-slide-img
-            />
-          </figure>
-        ))
-      }
-    </div>
+  <div class="mobile-hero__frame" data-hero-slides>
+    {
+      slides.map((slide, index) => (
+        <figure
+          class="mobile-hero__slide"
+          data-hero-slide
+          style={`opacity:${index === 0 ? 1 : 0}`}
+          aria-hidden={index !== 0 ? 'true' : undefined}
+        >
+          <img
+            class="mobile-hero__img"
+            src={slide.src}
+            alt={slide.alt}
+            width={slide.width}
+            height={slide.height}
+            loading={index === 0 ? 'eager' : 'lazy'}
+            fetchpriority={index === 0 ? 'high' : undefined}
+            decoding="async"
+          />
+        </figure>
+      ))
+    }
     <div class="mobile-hero__loader" data-hero-loader aria-hidden="true">
       <span class="mobile-hero__spinner"></span>
     </div>
   </div>
-  <div class="mobile-hero__dots" data-hero-dots>
-    {
-      slides.map((_, index) => (
-        <button
-          class="mobile-hero__dot"
-          type="button"
-          data-hero-dot
-          aria-label={`Go to slide ${index + 1}`}
-          aria-current={index === 0 ? 'true' : undefined}
-        ></button>
-      ))
-    }
+  <div class="mobile-hero__controls">
+    <button
+      class="mobile-hero__nav mobile-hero__nav--prev"
+      type="button"
+      data-hero-prev
+      aria-label="Previous hero image"
+    >
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M13 5l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="mobile-hero__dots" data-hero-dots role="group" aria-label="Choose hero image">
+      {
+        slides.map((_, index) => (
+          <button
+            class="mobile-hero__dot"
+            type="button"
+            data-hero-dot
+            aria-label={`Show hero image ${index + 1} of ${slides.length}`}
+            aria-current={index === 0 ? 'true' : undefined}
+          ></button>
+        ))
+      }
+    </div>
+    <button
+      class="mobile-hero__nav mobile-hero__nav--next"
+      type="button"
+      data-hero-next
+      aria-label="Next hero image"
+    >
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M9 5l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
   </div>
 </section>
 
 <script>
+  import { initHeroCarousel } from '../scripts/heroCarousel';
   const slider = document.querySelector<HTMLElement>('[data-hero-slider]');
   if (slider) {
-    const track = slider.querySelector<HTMLElement>('[data-hero-track]');
-    const frame = slider.querySelector<HTMLElement>('[data-hero-frame]');
-    const dots = Array.from(slider.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
-    const imgs = Array.from(slider.querySelectorAll<HTMLImageElement>('[data-slide-img]'));
-    const total = dots.length;
-    let index = 0;
-    let pointerX = 0;
-    let dragging = false;
-
-    const goTo = (next: number) => {
-      index = (next + total) % total;
-      track!.style.transform = `translateX(-${index * 100}%)`;
-      dots.forEach((dot, i) => {
-        dot.setAttribute('aria-current', String(i === index));
-      });
-      const img = imgs[index];
-      if (img) img.loading = 'eager';
-    };
-
-    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
-
+    initHeroCarousel(slider);
     // Hide the loading spinner once the first image (or a fallback timeout) is
     // ready, revealing the slider over the warm-gray loading surface.
     const reveal = () => slider.classList.add('is-loaded');
-    const first = imgs[0];
+    const first = slider.querySelector<HTMLImageElement>('[data-hero-slide] img');
     if (first?.complete) reveal();
     else first?.addEventListener('load', reveal, { once: true });
     window.setTimeout(reveal, 2500);
-
-    // Swipe with Pointer Events; vertical panning (page scroll) is left to the
-    // browser via touch-action: pan-y.
-    if (frame) {
-      frame.addEventListener('pointerdown', (event) => {
-        dragging = true;
-        pointerX = event.clientX;
-      });
-      frame.addEventListener('pointermove', (event) => {
-        if (dragging) {
-          const delta = event.clientX - pointerX;
-          if (Math.abs(delta) > 48) {
-            dragging = false;
-            goTo(delta < 0 ? index + 1 : index - 1);
-          }
-        }
-      });
-      frame.addEventListener('pointerup', () => {
-        dragging = false;
-      });
-      frame.addEventListener('pointercancel', () => {
-        dragging = false;
-      });
-    }
   }
 </script>

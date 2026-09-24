@@ -16,6 +16,24 @@ import { company, mission, vision, values } from '../data/company';
 import { capabilities } from '../data/services';
 
 const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partnership-first'];
+
+// Hero background carousel — the two owner-supplied photographs shown as a
+// auto-rotating, cross-fading background behind the existing hero copy. Alt
+// text describes what each image shows without claiming ownership.
+const heroSlides = [
+  {
+    src: '/img/hero/hero-vegetables.jpeg',
+    width: 1280,
+    height: 720,
+    alt: 'Fresh green vegetables growing in an agricultural field',
+  },
+  {
+    src: '/img/hero/hero-meat-seafood.jpeg',
+    width: 1280,
+    height: 720,
+    alt: 'Fresh meat, seafood, poultry and eggs',
+  },
+];
 ---
 
 <BaseLayout
@@ -24,17 +42,30 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
   path="/"
 >
   <!-- =========================================================== HERO -->
-  <section class="hero">
-    <img
-      class="hero__bg"
-      src="/img/hero/hero-farm.jpeg"
-      alt="Green agricultural field landscape"
-      width="1280"
-      height="719"
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-    />
+  <section class="hero" data-hero-carousel>
+    <div class="hero__slides" data-hero-slides>
+      {
+        heroSlides.map((slide, index) => (
+          <figure
+            class="hero__slide"
+            data-hero-slide
+            style={`opacity:${index === 0 ? 1 : 0}`}
+            aria-hidden={index !== 0 ? 'true' : undefined}
+          >
+            <img
+              class="hero__img"
+              src={slide.src}
+              alt={slide.alt}
+              width={slide.width}
+              height={slide.height}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchpriority={index === 0 ? 'high' : undefined}
+              decoding="async"
+            />
+          </figure>
+        ))
+      }
+    </div>
     <div class="container hero__inner">
       <div class="hero__copy">
         <Reveal>
@@ -55,6 +86,37 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
           </div>
         </Reveal>
       </div>
+    </div>
+    <div class="hero__controls">
+      <button
+        class="hero__nav hero__nav--prev"
+        type="button"
+        data-hero-prev
+        aria-label="Previous hero image"
+      >
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M13 5l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="hero__dots" role="group" aria-label="Choose hero image">
+        {
+          heroSlides.map((_, index) => (
+            <button
+              class="hero__dot"
+              type="button"
+              data-hero-dot
+              aria-label={`Show hero image ${index + 1} of ${heroSlides.length}`}
+              aria-current={index === 0 ? 'true' : undefined}
+            ></button>
+          ))
+        }
+      </div>
+      <button
+        class="hero__nav hero__nav--next"
+        type="button"
+        data-hero-next
+        aria-label="Next hero image"
+      >
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M9 5l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
     <div class="hero__meta">
       <div class="container hero__meta-inner">
@@ -305,3 +367,9 @@ const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partner
     ]}
   />
 </BaseLayout>
+
+<script>
+  import { initHeroCarousel } from '../scripts/heroCarousel';
+  const hero = document.querySelector<HTMLElement>('[data-hero-carousel]');
+  if (hero) initHeroCarousel(hero);
+</script>
