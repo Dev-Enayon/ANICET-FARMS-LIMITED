@@ -1,8 +1,10 @@
 ---
 // Mobile-only hero carousel (max-width: 767px). Uses the same two owner-supplied
 // hero photographs as the desktop hero, driven by the shared fade carousel
-// (autoplay, Previous/Next, indicators, swipe, reduced-motion). Hidden above
-// the mobile breakpoint.
+// (autoplay, Previous/Next, indicators, swipe, reduced-motion) with a compact
+// brand/CTA overlay. Hidden above the mobile breakpoint.
+
+import { company } from '../data/company';
 
 const slides = [
   {
@@ -50,6 +52,16 @@ const slides = [
     }
     <div class="mobile-hero__loader" data-hero-loader aria-hidden="true">
       <span class="mobile-hero__spinner"></span>
+    </div>
+    <div class="mobile-hero__content">
+      <p class="mobile-hero__eyebrow">{company.legalName}</p>
+      <h2 class="mobile-hero__title">
+        Building better agriculture for a&nbsp;stronger future.
+      </h2>
+      <p class="mobile-hero__lede">{company.shortStatement}</p>
+      <div class="mobile-hero__cta">
+        <a class="btn btn--accent" href="/products/">Explore Products</a>
+      </div>
     </div>
   </div>
   <div class="mobile-hero__controls">

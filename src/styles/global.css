@@ -624,6 +624,12 @@ p {
   animation: announce-scroll 32s linear infinite;
 }
 
+/* Mobile-only static announcement (short + full meaning, never clipped).
+   Hidden by default; the scrolling ticker above stays for wider screens. */
+.announce__static {
+  display: none;
+}
+
 .announce__item {
   white-space: nowrap;
   margin: 0;
@@ -700,7 +706,41 @@ p {
   position: relative;
   justify-content: space-between;
   gap: 1rem;
-  padding-block: 0.6rem;
+  height: 4.25rem;
+  padding-block: 0;
+}
+
+/* Mobile / tablet brand: emblem + two-line full legal name. No truncation. */
+.mobile-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.mobile-brand__words {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.12;
+}
+
+.mobile-brand__line {
+  font-family: var(--font-display);
+  white-space: nowrap;
+}
+
+.mobile-brand__line:first-child {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.mobile-brand__line:last-child {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-muted);
 }
 
 .site-header__mobile-brand {
@@ -746,6 +786,49 @@ p {
 .site-header__mobile-wa:hover,
 .site-header__mobile-wa:focus-visible {
   border-color: var(--color-accent);
+}
+
+/* Compact circular cart button (mobile / tablet header). The gold badge keeps
+   the visible count. Positioned and sized for comfortable touch. */
+.site-header__mobile-cart {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--brand-green);
+  transition:
+    background-color var(--duration) ease,
+    border-color var(--duration) ease,
+    color var(--duration) ease;
+}
+
+.site-header__mobile-cart:hover,
+.site-header__mobile-cart:focus-visible {
+  border-color: var(--brand-green);
+  background: var(--color-nav-hover);
+}
+
+.mobile-cart__badge {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--brand-gold);
+  color: var(--color-badge-text, #24211b);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .site-header__navwrap {
@@ -1181,9 +1264,6 @@ p {
   }
   .nav-toggle {
     display: inline-flex;
-  }
-  .site-header__mobile-brand .logo__words {
-    display: none;
   }
 
   /* Full-width stacked search bar: shorter pill, smaller type */
@@ -1881,7 +1961,7 @@ p {
 /* On mobile the floating button sits above the info banner + bottom nav. */
 @media (max-width: 767px) {
   .whatsapp-fab {
-    bottom: calc(11.25rem + env(safe-area-inset-bottom, 0));
+    bottom: calc(9rem + env(safe-area-inset-bottom, 0));
   }
 }
 
@@ -1950,7 +2030,7 @@ p {
     display: block;
   }
   body {
-    padding-bottom: calc(6.25rem + env(safe-area-inset-bottom, 0));
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0));
   }
 }
 
@@ -2047,16 +2127,37 @@ p {
     display: block;
   }
 
-  /* ---- Announcement strip: brand green, about 58px tall ---- */
+  /* ---- Announcement strip: static brand-green bar, never clipped ---- */
   .announce {
     background: var(--brand-green-deep);
     border-bottom: 0;
-    padding-block: 1.1rem;
+    padding-block: 0.7rem;
   }
-  .announce__item {
+  .announce__track {
+    display: none;
+  }
+  .announce__static {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.15rem;
+    padding: 0 1.25rem;
+  }
+  .announce__static-line {
+    margin: 0;
     color: #ffffff;
-    font-size: var(--text-xs);
+    font-size: clamp(0.8125rem, 1.6vw, 0.9375rem);
     font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+  }
+  .announce__static-sub {
+    margin: 0;
+    color: rgb(244 240 230 / 0.85);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    line-height: 1.35;
   }
 
   /* ---- Header: solid surface, green burger, centred logo, cart disc ---- */
@@ -2077,11 +2178,10 @@ p {
 
   .site-header__row--mobile {
     gap: 0.5rem;
-    padding-block: 0.4rem;
   }
 
   .nav-toggle {
-    width: 1.9rem;
+    width: 2.75rem;
     height: 2.75rem;
     flex: none;
     padding: 0;
@@ -2089,7 +2189,7 @@ p {
     border: 0;
   }
   .nav-toggle__bar {
-    width: 1.75rem;
+    width: 1.4375rem;
     height: 3px;
     background: var(--brand-green);
   }
@@ -2101,50 +2201,20 @@ p {
   }
 
   .site-header__mobile-brand {
-    max-width: 130px;
+    max-width: 12.5rem;
   }
-  .site-header__mobile-brand .logo__words {
-    display: inline-flex;
-    max-width: 88px;
-    overflow: hidden;
+  .mobile-brand {
+    gap: 0.4rem;
   }
-  .site-header__mobile-brand .logo__name {
-    font-size: 0.75rem;
+  .mobile-brand .logo__img {
+    max-height: 2rem;
   }
-  .site-header__mobile-brand .logo__img {
-    max-height: 2.2rem;
+  .mobile-brand__line:first-child {
+    font-size: 0.875rem;
   }
-
-  /* Cart button — blush circular disc with gold count badge */
-  .site-header__mobile-cart {
-    position: relative;
-    display: inline-grid;
-    place-items: center;
-    flex: none;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 0;
-    background: var(--cart-btn-bg);
-    color: var(--brand-green);
-    box-shadow: var(--shadow-sm);
-  }
-  .mobile-cart__badge {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 4px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    background: var(--brand-gold);
-    color: var(--color-badge-text);
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
+  .mobile-brand__line:last-child {
+    font-size: 0.625rem;
+    letter-spacing: 0.18em;
   }
 
   /* ---- Drawer: slide out from the left ---- */
@@ -2204,7 +2274,7 @@ p {
     border-bottom: 1px solid var(--color-border);
   }
 
-  /* ---- Fixed bottom navigation: 4 equal tabs, ~100px tall ---- */
+  /* ---- Fixed bottom navigation: 4 equal tabs, ~64px tall + safe area ---- */
   .bottom-nav {
     z-index: 45;
     background: var(--color-surface);
@@ -2213,34 +2283,31 @@ p {
   .bottom-nav__list {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-  .bottom-nav__list li + li {
-    border-left: 1px solid var(--color-border);
-  }
   .bottom-nav__link {
     position: relative;
-    gap: 0.4rem;
-    min-height: 6.25rem;
-    padding: 0.8rem 0.25rem;
-    font-size: 0.9375rem;
-    font-weight: 700;
+    gap: 0.3rem;
+    min-height: 4rem;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
     color: var(--store-icon);
   }
   .bottom-nav__link[aria-current='page'] {
-    color: var(--store-icon);
+    color: var(--brand-green);
   }
   .bottom-nav__link[aria-current='page']::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 22%;
-    right: 22%;
-    height: 3px;
+    left: 28%;
+    right: 28%;
+    height: 2px;
     border-radius: 0 0 3px 3px;
     background: var(--brand-gold);
   }
   .bottom-nav__icon {
-    width: 32px;
-    height: 32px;
+    width: 22px;
+    height: 22px;
   }
   .bottom-nav__icon-wrap {
     position: relative;
@@ -2248,11 +2315,11 @@ p {
   }
   .bottom-nav__badge {
     position: absolute;
-    top: -6px;
-    right: -14px;
-    min-width: 22px;
-    height: 22px;
-    padding: 0 5px;
+    top: -4px;
+    right: -12px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -2260,7 +2327,7 @@ p {
     border: 2px solid var(--color-surface);
     background: var(--brand-wishlist);
     color: #ffffff;
-    font-size: 13px;
+    font-size: 10px;
     font-weight: 700;
     line-height: 1;
   }
@@ -2270,7 +2337,7 @@ p {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: calc(6.25rem + env(safe-area-inset-bottom, 0));
+    bottom: calc(4.75rem + env(safe-area-inset-bottom, 0));
     z-index: 35;
     display: flex;
     align-items: center;
@@ -2370,7 +2437,7 @@ p {
   }
   .mobile-hero__frame {
     position: relative;
-    height: 560px;
+    height: clamp(320px, 86vw, 400px);
     overflow: hidden;
     background: var(--hero-load-bg);
     touch-action: pan-y;
@@ -2378,9 +2445,77 @@ p {
   .mobile-hero__slide {
     position: absolute;
     inset: 0;
+    z-index: 0;
     margin: 0;
     opacity: 0;
     transition: opacity 0.45s ease;
+  }
+  .mobile-hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Slightly above centre: keeps the landscape subject visible in the
+       shorter portrait crop instead of cutting into the spread. */
+    object-position: center 40%;
+  }
+  /* Readability scrim behind the brand/CTA overlay */
+  .mobile-hero__frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      to top,
+      rgb(12 22 17 / 0.82) 0%,
+      rgb(12 22 17 / 0.45) 45%,
+      rgb(12 22 17 / 0.08) 100%
+    );
+  }
+  .mobile-hero__content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding: 1.25rem 1.375rem 1.5rem;
+    text-align: left;
+    pointer-events: none;
+  }
+  .mobile-hero__eyebrow {
+    margin: 0;
+    color: var(--brand-gold);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .mobile-hero__title {
+    margin: 0;
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 6vw, 1.875rem);
+    line-height: 1.08;
+    max-width: 22ch;
+  }
+  .mobile-hero__lede {
+    margin: 0;
+    color: rgb(255 255 255 / 0.9);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    max-width: 34ch;
+  }
+  .mobile-hero__cta {
+    margin-top: 0.35rem;
+    pointer-events: auto;
+  }
+  .mobile-hero__cta .btn {
+    min-height: 2.75rem;
   }
   .mobile-hero__img {
     position: absolute;
@@ -2393,7 +2528,7 @@ p {
   .mobile-hero__loader {
     position: absolute;
     inset: 0;
-    z-index: 2;
+    z-index: 3;
     display: grid;
     place-items: center;
     background: var(--hero-load-bg);

@@ -13,6 +13,7 @@ import HeaderIcons from './HeaderIcons.astro';
 import { primaryNav } from '../data/navigation';
 import { whatsappLink } from '../data/whatsapp';
 import { cartCount } from '../data/shop';
+import { company } from '../data/company';
 
 interface Props {
   currentPath?: string;
@@ -24,6 +25,12 @@ const isActive = (match: string) => currentPath.startsWith(match);
 
 const announcement =
   'WELCOME TO ANICET FARMS LIMITED - WE SPECIALISE IN ALL FORM OF AFRICAN EXOTIC FOODS';
+
+// Mobile wordmark stack: "ANICET FARMS" over "LIMITED" so the full legal name
+// is always visible without horizontal truncation.
+const brandWords = company.legalName.split(' ');
+const brandLineOne = brandWords.slice(0, -1).join(' ');
+const brandLineTwo = brandWords.slice(-1)[0] ?? '';
 ---
 
 <div class="announce" role="region" aria-label="Announcement">
@@ -40,6 +47,12 @@ const announcement =
         </p>
       ))
     }
+  </div>
+  <div class="announce__static">
+    <p class="announce__static-line">WELCOME TO ANICET FARMS LIMITED</p>
+    <p class="announce__static-sub">
+      We specialise in all forms of African exotic foods
+    </p>
   </div>
 </div>
 
@@ -101,7 +114,13 @@ const announcement =
     </button>
 
     <a href="/" class="site-header__mobile-brand" aria-label="ANICET FARMS LIMITED — home">
-      <Logo size="sm" />
+      <span class="mobile-brand">
+        <Logo size="sm" showName={false} />
+        <span class="mobile-brand__words" aria-hidden="true">
+          <span class="mobile-brand__line">{brandLineOne}</span>
+          <span class="mobile-brand__line">{brandLineTwo}</span>
+        </span>
+      </span>
     </a>
 
     <div class="site-header__mobile-actions">
@@ -122,8 +141,8 @@ const announcement =
         <svg
           class="site-header__mobile-cart-icon"
           viewBox="0 0 24 24"
-          width="26"
-          height="26"
+          width="22"
+          height="22"
           fill="none"
           stroke="currentColor"
           stroke-width="1.6"
