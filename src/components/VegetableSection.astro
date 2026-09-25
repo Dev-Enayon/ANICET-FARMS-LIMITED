@@ -1,0 +1,528 @@
+---
+// Desktop-only retail-style vegetable section (min-width: 1024px).
+//
+// Data source: src/data/products.ts — same catalogue as /products/. Renders
+// ONLY products whose category contains "vegetable"; nothing is invented here.
+// Until verified entries exist, an honest empty state is shown so no fake
+// product claims are made. Prices render with the dollar sign via
+// src/data/pricing.ts (USD major units) when the optional `price` field is set.
+//
+// Layout: static category promo card on the left, horizontally scrolling
+// product rail on the right. The promo panel never participates in the
+// scrolling. Mobile (<1024px) keeps today's homepage untouched — this
+// section is display:none there.
+
+import { products } from '../data/products';
+import { formatUsdPrice } from '../data/pricing';
+import WhatsAppButton from './WhatsAppButton.astro';
+import EmptyState from './EmptyState.astro';
+
+const vegetables = products.filter((product) =>
+  product.category.toLowerCase().includes('vegetable'),
+);
+
+const hasCatalogue = vegetables.length > 0;
+
+const promoMessage = `Hello ANICET FARMS LIMITED, I would like to request information about your vegetable products.`;
+
+function vegetableEnquiry(name: string): string {
+  return `Hello ANICET FARMS LIMITED, I would like to request information about ${name}.`;
+}
+---
+
+<section class="vegetable-section" data-vegetable-section>
+  <div class="container">
+    <div class="vegetable-section__head">
+      <div class="stack-sm">
+        <h2 class="display-2 vegetable-section__title">Vegetable products.</h2>
+        <p class="lede vegetable-section__lede">
+          A dedicated vegetable range will be listed here as the catalogue is verified.
+        </p>
+      </div>
+      <div class="vegetable-rail__controls" role="group" aria-label="Vegetable product navigation">
+        <button class="vegetable-rail__btn" type="button" data-vegetable-prev aria-label="Previous products" disabled>
+          <svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M13 5l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="vegetable-rail__btn" type="button" data-vegetable-next aria-label="Next products" disabled>
+          <svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M9 5l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="vegetable-shelf">
+      <!-- LEFT — static promotional card. Never part of the carousel. -->
+      <aside class="vegetable-promo">
+        <figure class="vegetable-promo__media">
+          <img
+            src="/img/hero/hero-vegetables.jpeg"
+            alt="Fresh green vegetables growing in an agricultural field"
+            width="1280"
+            height="720"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+        <div class="vegetable-promo__overlay">
+          <h3 class="vegetable-promo__title">Vegetable</h3>
+          <p class="vegetable-promo__text">
+            Fresh produce supplied to markets, retailers, and kitchens.
+          </p>
+          <div class="vegetable-promo__actions">
+            <WhatsAppButton label="Enquire about vegetables" variant="accent" size="sm" message={promoMessage} />
+          </div>
+        </div>
+      </aside>
+
+      <!-- RIGHT — horizontal product rail (scrolls independently). -->
+      <!-- RIGHT — horizontal product rail (scrolls independently). Always the
+           scroller so the carousel wiring is stable whether or not the
+           catalogue has verified entries yet. -->
+      <div
+        class="vegetable-rail"
+        data-vegetable-rail
+        role="region"
+        aria-label="Vegetable products"
+        tabindex="0"
+      >
+        {
+          hasCatalogue ? (
+            <ul class="vegetable-track">
+              {
+                vegetables.map((product) => (
+                  <li class="vegetable-track__item">
+                    <article class="vegetable-card">
+                      <div class="vegetable-card__media">
+                        {
+                          product.image ? (
+                            <a href="/products/" tabindex="-1" aria-hidden="true">
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                width="1080"
+                                height="810"
+                                loading="lazy"
+                                decoding="async"
+                              />
+                            </a>
+                          ) : (
+                            <span class="vegetable-card__placeholder" aria-hidden="true">
+                              <svg width="40" height="40" viewBox="0 0 40 40" focusable="false">
+                                <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                  <path d="M20 34c-8-4-11-11-9-17 5-1 11 1 14 6" />
+                                  <path d="M20 34c7-5 10-11 8-17-5 0-10 2-13 7" />
+                                  <path d="M6 15c3-6 9-9 16-8 1 6-2 12-8 14-4-2-6-5-8-6z" />
+                                </g>
+                              </svg>
+                            </span>
+                          )
+                        }
+                      </div>
+                      <div class="vegetable-card__body">
+                        <h3 class="vegetable-card__name">
+                          <a href="/products/">{product.name}</a>
+                        </h3>
+                        {
+                          product.price !== undefined && (
+                            <p class="vegetable-card__price">{formatUsdPrice(product.price)}</p>
+                          )
+                        }
+                        <div class="vegetable-card__actions">
+                          <WhatsAppButton
+                            label="Request information"
+                            variant="accent"
+                            size="sm"
+                            message={vegetableEnquiry(product.name)}
+                          />
+                        </div>
+                      </div>
+                    </article>
+                  </li>
+                ))
+              }
+            </ul>
+          ) : (
+            <div class="vegetable-empty-wrap">
+              <div class="vegetable-empty-card">
+                <EmptyState
+                  title="Vegetable products coming soon."
+                  note="Fresh vegetable products will appear here once our catalogue is available. Until then we do not present unverified products as fact."
+                >
+                  <div style="margin-top:.5rem">
+                    <WhatsAppButton
+                      label="Enquire about vegetables"
+                      variant="accent"
+                      size="sm"
+                      message={promoMessage}
+                    />
+                  </div>
+                </EmptyState>
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Desktop-only: hidden on mobile so today's layout is untouched. */
+  .vegetable-section {
+    display: none;
+  }
+
+  /* ---- Section head ------------------------------------------------- */
+  .vegetable-section__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .vegetable-section__title {
+    margin-top: 0.75rem;
+  }
+  .vegetable-section__lede {
+    margin-top: 0.75rem;
+    max-width: 46ch;
+  }
+
+  /* ---- Two-column shelf --------------------------------------------- */
+  .vegetable-shelf {
+    display: grid;
+    grid-template-columns: minmax(17rem, 28%) 1fr;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: stretch;
+  }
+
+  /* ---- LEFT: static promo card -------------------------------------- */
+  .vegetable-promo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 26rem;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--brand-green-deep);
+    box-shadow: var(--shadow-md);
+  }
+  .vegetable-promo__media {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+  }
+  .vegetable-promo__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .vegetable-promo__overlay {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: clamp(1.25rem, 2.5vw, 2rem);
+    background: linear-gradient(
+      to top,
+      rgb(10 59 35 / 0.92) 0%,
+      rgb(10 59 35 / 0.55) 55%,
+      rgb(10 59 35 / 0.12) 100%
+    );
+    color: var(--color-on-dark);
+  }
+  .vegetable-promo__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1.1;
+    color: #ffffff;
+  }
+  .vegetable-promo__text {
+    margin-top: 0.25rem;
+    max-width: 26ch;
+    color: rgb(244 240 230 / 0.92);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+  .vegetable-promo__actions {
+    margin-top: 0.5rem;
+  }
+
+  /* ---- RIGHT: product rail ------------------------------------------ */
+  /* The rail IS the horizontal scroll container (the script scrolls it);
+     the inner track is the overflowing flex content. */
+  .vegetable-rail {
+    min-width: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0.125rem 0.25rem 0.75rem; /* room for border/shadow/focus ring */
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 0.25rem;
+    scrollbar-width: none; /* Firefox */
+    cursor: grab;
+  }
+  .vegetable-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .vegetable-rail--dragging {
+    cursor: grabbing;
+  }
+  /* Keyboard focus ring for the scroll region itself. */
+  .vegetable-rail:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+    border-radius: var(--radius-md);
+  }
+
+  /* ---- Product track ------------------------------------------------ */
+  .vegetable-track {
+    display: flex;
+    gap: clamp(1.25rem, 2vw, 1.75rem);
+    width: max-content; /* let the row outgrow the rail so it can scroll */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .vegetable-track__item {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  /* ---- Product card -------------------------------------------------- */
+  .vegetable-card {
+    display: flex;
+    flex-direction: column;
+    width: clamp(15rem, 17vw, 18rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--duration) var(--ease-out), transform var(--duration) var(--ease-out);
+  }
+  .vegetable-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  .vegetable-card__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: var(--color-background-alt);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .vegetable-card__media a {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .vegetable-card__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* never crop a product photo */
+    object-position: center;
+    display: block;
+  }
+  .vegetable-card__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--color-border);
+  }
+  .vegetable-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.125rem;
+    flex: 1;
+  }
+  .vegetable-card__name {
+    margin: 0;
+    font-size: var(--text-lg);
+    line-height: 1.25;
+  }
+  .vegetable-card__name a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .vegetable-card__name a:hover {
+    color: var(--color-accent-hover);
+  }
+  .vegetable-card__price {
+    margin: 0 0 0.125rem;
+    font-weight: 700;
+    font-size: var(--text-xl);
+    color: var(--brand-green);
+    font-variant-numeric: tabular-nums;
+  }
+  .vegetable-card__actions {
+    margin-top: auto;
+  }
+
+  /* ---- Carousel controls --------------------------------------------- */
+  .vegetable-rail__controls {
+    display: flex;
+    gap: 0.625rem;
+    flex-shrink: 0;
+  }
+  .vegetable-rail__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background var(--duration) var(--ease-out), color var(--duration) var(--ease-out), border-color var(--duration) var(--ease-out);
+  }
+  .vegetable-rail__btn:hover:not(:disabled) {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  .vegetable-rail__btn:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+  }
+  .vegetable-rail__btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* ---- Empty state ---------------------------------------------------- */
+  .vegetable-empty-wrap {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+  }
+  .vegetable-empty-card {
+    width: 100%;
+  }
+
+  @media (min-width: 1024px) {
+    .vegetable-section {
+      display: block;
+    }
+  }
+
+  @media (max-width: 1280px) {
+    .vegetable-shelf {
+      grid-template-columns: minmax(15rem, 26%) 1fr;
+    }
+  }
+</style>
+
+<script>
+  function initVegetableRail(root: HTMLElement): void {
+    const rail = root.querySelector<HTMLElement>('[data-vegetable-rail]');
+    const prev = root.querySelector<HTMLButtonElement>('[data-vegetable-prev]');
+    const next = root.querySelector<HTMLButtonElement>('[data-vegetable-next]');
+    if (!rail) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const behavior: ScrollBehavior = reducedMotion ? 'auto' : 'smooth';
+
+    const track = rail.querySelector<HTMLElement>('.vegetable-track');
+    const gap = track ? parseFloat(getComputedStyle(track).gap) || 0 : 0;
+
+    // Step of roughly one full card (width + gap), clamped to the visible area.
+    const stepSize = (): number => {
+      const first = track?.querySelector<HTMLElement>('.vegetable-track__item');
+      const card = first ? Math.ceil(first.getBoundingClientRect().width + gap) : rail.clientWidth;
+      return Math.min(card, Math.max(rail.clientWidth * 0.85, 1));
+    };
+
+    const updateButtons = (): void => {
+      if (!prev || !next) return;
+      const atStart = rail.scrollLeft <= 4;
+      const atEnd = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 4;
+      prev.disabled = atStart;
+      next.disabled = atEnd;
+    };
+
+    prev?.addEventListener('click', () => {
+      rail.scrollBy({ left: -stepSize(), behavior });
+    });
+    next?.addEventListener('click', () => {
+      rail.scrollBy({ left: stepSize(), behavior });
+    });
+
+    // Keyboard: left/right arrows scroll the rail; Home/End jump to the ends.
+    rail.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        rail.scrollBy({ left: -stepSize(), behavior });
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        rail.scrollBy({ left: stepSize(), behavior });
+      } else if (event.key === 'Home') {
+        event.preventDefault();
+        rail.scrollTo({ left: 0, behavior });
+      } else if (event.key === 'End') {
+        event.preventDefault();
+        rail.scrollTo({ left: rail.scrollWidth, behavior });
+      }
+    });
+
+    // Pointer drag (also enables mouse-wheel-independent hands-on browsing).
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+    let dragged = false;
+
+    rail.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+      isDown = true;
+      dragged = false;
+      startX = event.clientX;
+      startScroll = rail.scrollLeft;
+      rail.classList.add('vegetable-rail--dragging');
+    });
+    rail.addEventListener('pointermove', (event) => {
+      if (!isDown) return;
+      const delta = event.clientX - startX;
+      if (Math.abs(delta) > 6) dragged = true;
+      rail.scrollLeft = startScroll - delta;
+    });
+    const endDrag = (): void => {
+      isDown = false;
+      rail.classList.remove('vegetable-rail--dragging');
+    };
+    rail.addEventListener('pointerup', endDrag);
+    rail.addEventListener('pointercancel', endDrag);
+    // Suppress the click that follows a drag so links don't fire accidentally.
+    rail.addEventListener(
+      'click',
+      (event) => {
+        if (dragged) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      },
+      true,
+    );
+
+    rail.addEventListener('scroll', updateButtons, { passive: true });
+    window.addEventListener('resize', updateButtons, { passive: true });
+    if (typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(updateButtons).observe(rail);
+    }
+    updateButtons();
+  }
+
+  const section = document.querySelector<HTMLElement>('[data-vegetable-section]');
+  if (section) initVegetableRail(section);
+</script>

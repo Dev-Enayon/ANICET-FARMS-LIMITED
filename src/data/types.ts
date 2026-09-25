@@ -32,6 +32,13 @@ export interface Product {
   unit?: string;
   availability?: 'in-stock' | 'request-information' | 'unconfirmed';
   image?: string;
+  /**
+   * Retail unit price in USD major units (e.g. `3.5` renders as `$3.50`).
+   * Used only by retail-format shelves (e.g. the desktop vegetable section).
+   * The corporate/enquiry-first catalogue deliberately stores no prices; this
+   * field stays optional so verified data can be added without restructuring.
+   */
+  price?: number;
 }
 
 export interface LeadershipMember {

@@ -12,6 +12,7 @@ import ValueChain from '../components/ValueChain.astro';
 import CtaBand from '../components/CtaBand.astro';
 import MobileHeroSlider from '../components/MobileHeroSlider.astro';
 import MobileFeatures from '../components/MobileFeatures.astro';
+import VegetableSection from '../components/VegetableSection.astro';
 import { company, mission, vision, values } from '../data/company';
 import { capabilities } from '../data/services';
 
@@ -322,6 +323,11 @@ const heroSlides = [
       </div>
     </div>
   </section>
+
+  <!-- Desktop-only vegetable shelf (min-width: 1024px): static promo card +
+       horizontally scrolling vegetable product rail. Renders from the real
+       catalogue (src/data/products.ts); honest empty state until verified data. -->
+  <VegetableSection />
 
   <!-- ================================================ PARTNERSHIP / B2B -->
   <section class="section band band--dark">
