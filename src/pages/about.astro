@@ -1,52 +1,99 @@
 ---
-// About — story, mission/vision, values, leadership, operations.
-// No invented people, dates, or achievements. Empty collections render as
-// honest placeholders.
+// About — a professional agricultural/export overview.
+// All copy is positioning language grounded in the existing project (company.ts,
+// services.ts). No invented history, statistics, certifications, destinations,
+// or team members. Aspirational vision/mission is labelled as direction.
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Reveal from '../components/Reveal.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import EmptyState from '../components/EmptyState.astro';
 import CtaBand from '../components/CtaBand.astro';
-import { company, mission, vision, values } from '../data/company';
-import { leadership } from '../data/people';
+import { company, about, businessAreas, values } from '../data/company';
+
+const whoWeAreNote =
+  'ANICET FARMS brings together agricultural production, sourcing and export-oriented supply. Our purpose is to help quality goods move from their source to the customers and markets that need them — reliably and to a consistent standard.';
+
+const approachSteps = [
+  {
+    num: '01',
+    title: 'Source',
+    description: 'Sourcing quality produce and goods from farms and reliable suppliers.',
+  },
+  {
+    num: '02',
+    title: 'Select',
+    description: 'Assessing goods against the quality and market requirements we serve.',
+  },
+  {
+    num: '03',
+    title: 'Prepare',
+    description: 'Careful handling, preparation and packaging for dependable supply.',
+  },
+  {
+    num: '04',
+    title: 'Connect',
+    description: 'Matching quality goods with customers, partners and appropriate markets.',
+  },
+  {
+    num: '05',
+    title: 'Export',
+    description: 'Supporting the movement of goods to markets and clients beyond borders.',
+  },
+];
+
+const partnershipGroups = [
+  'Farmers',
+  'Suppliers',
+  'Customers',
+  'Logistics partners',
+  'Business partners',
+  'Communities',
+  'Markets',
+];
 ---
 
 <BaseLayout
-  title="About"
-  description="Learn about ANICET FARMS LIMITED — an agricultural enterprise built on disciplined production, professional operations, and long-term value."
+  title="About ANICET FARMS"
+  description="ANICET FARMS is an agricultural and export-focused company connecting quality farm produce and carefully sourced goods with markets that value reliability, quality and consistency."
   path="/about/"
 >
-  <PageHero eyebrow="About Us" title="The story of a serious agricultural enterprise." lede={company.shortStatement}>
+  <PageHero
+    eyebrow="About ANICET FARMS"
+    title="Connecting Agriculture, Quality and Global Opportunity."
+    lede={`${company.operatingName} is an agricultural and export-focused company working across farming, sourcing and the responsible movement of quality goods to market. ${about.bridge}`}
+  >
     <Breadcrumbs slot="breadcrumbs" items={[{ name: 'About' }]} />
-    <span class="chip chip--on-dark">Corporate profile</span>
-    <span class="chip chip--on-dark">Placeholder-ready architecture</span>
+    <span class="chip chip--on-dark">Agricultural &amp; export</span>
+    <span class="chip chip--on-dark">Quality-first</span>
+    <span class="chip chip--on-dark">Partnership-ready</span>
   </PageHero>
 
-  <!-- Story -->
+  <!-- Who We Are -->
   <section class="section">
     <div class="container">
       <div class="split-grid">
         <SectionHeading
           eyebrow="Who We Are"
-          title="Disciplined production. Professional operations. Long-term value."
-          lede="ANICET FARMS LIMITED is being positioned as a dependable partner across the agricultural value chain."
+          title="Agriculture, sourcing and the movement of goods to markets."
+          lede={about.intro}
         >
           <Reveal delay={80}>
-            <p class="lede" style="margin-top:1.25rem">
-              The company has not yet supplied an official description. This page is built so the
-              verified narrative, milestones, and imagery can be dropped in without redesign.
-              <!-- TODO: replace with verified company story + imagery. -->
+            <p class="lede" style="margin-top:1.25rem">{whoWeAreNote}</p>
+          </Reveal>
+          <Reveal delay={120}>
+            <p class="lede" style="margin-top:1rem;font-size:var(--text-sm);color:var(--color-muted)">
+              The company's official profile is being formalised; verified details will replace
+              this overview as they are confirmed.
             </p>
           </Reveal>
         </SectionHeading>
         <Reveal delay={140}>
           <figure class="photo-frame">
             <img
-              src="/img/farming/farm-field1.jpeg"
-              alt="Green agricultural field landscape"
+              src="/img/hero/hero-farm.jpeg"
+              alt="Agricultural farmland landscape"
               width="1280"
               height="720"
               loading="lazy"
@@ -58,27 +105,119 @@ import { leadership } from '../data/people';
     </div>
   </section>
 
-  <!-- Mission & Vision -->
+  <!-- What We Do -->
   <section class="section section--tight band band--sand">
     <div class="container">
-      <SectionHeading eyebrow="Purpose" title="Mission and vision" align="center" />
+      <SectionHeading
+        eyebrow="What We Do"
+        title="Areas of focus."
+        lede="Five areas define how ANICET FARMS intends to serve agriculture and trade. Each is described as a focus — exact product specifications are published on the Products page as they are confirmed."
+      />
+      <div class="grid-3">
+        {
+          businessAreas.map((area, index) => (
+            <Reveal delay={index * 60}>
+              <article class="feature-card">
+                {area.image ? (
+                  <figure class="feature-card__media">
+                    <img
+                      src={area.image}
+                      alt={area.alt ?? area.title}
+                      width="1280"
+                      height="720"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </figure>
+                ) : (
+                  <div class="feature-card__media feature-card__media--mark" aria-hidden="true">
+                    <span>◫</span>
+                  </div>
+                )}
+                <div class="feature-card__body">
+                  <h3>{area.title}</h3>
+                  <p>{area.summary}</p>
+                </div>
+              </article>
+            </Reveal>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- From Source to Market -->
+  <section class="band band--dark section">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Our Approach"
+        title="From Source to Market."
+        lede="Our approach is centred on sourcing quality goods, preparing them carefully and connecting them with appropriate markets — locally and internationally. The stages below describe how we intend to work and will be refined as operations are confirmed."
+        dark
+      />
+      <div class="chain about-chain">
+        {
+          approachSteps.map((step, index) => (
+            <div class="chain__node" data-reveal style={`--reveal-delay: ${index * 60}ms`}>
+              <span class="chain__num">{step.num}</span>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+              <span class="chip chip--on-dark">Working approach</span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Quality Matters -->
+  <section class="section">
+    <div class="container">
+      <div class="split-grid split-grid--reverse">
+        <SectionHeading
+          eyebrow="Why Quality Matters"
+          title="Quality Is More Than a Standard."
+          lede="Quality affects trust, repeat business and export relationships. It begins with the source and continues through handling, preparation and delivery — it is the thread that holds long-term supply relationships together."
+        >
+          <Reveal delay={80}>
+            <p class="lede" style="margin-top:1.25rem">{about.qualityStatement}</p>
+          </Reveal>
+        </SectionHeading>
+        <Reveal delay={140}>
+          <figure class="photo-frame">
+            <img
+              src="/img/farming/farming-operation.jpg"
+              alt="Agricultural machinery operating in a farm field"
+              width="1280"
+              height="720"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vision & Mission -->
+  <section class="section section--tight band band--sand">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Purpose"
+        title="Our Vision and Mission."
+        lede="Presented as direction. Both statements will be aligned to the company's official wording and verified record once confirmed."
+      />
       <div class="grid-2">
         <Reveal>
           <article class="card">
-            <span class="chip chip--accent">Mission</span>
-            <p class="display-3" style="margin-top:1rem">
-              {mission ?? 'Our mission statement will be published here once confirmed.'}
-              <!-- TODO: populate `mission` in src/data/company.ts -->
-            </p>
+            <span class="chip chip--accent">Our Vision</span>
+            <p class="display-3" style="margin-top:1rem">{about.visionDirection}</p>
           </article>
         </Reveal>
         <Reveal delay={100}>
           <article class="card">
-            <span class="chip chip--accent">Vision</span>
-            <p class="display-3" style="margin-top:1rem">
-              {vision ?? 'Our vision for the future will be published here once confirmed.'}
-              <!-- TODO: populate `vision` in src/data/company.ts -->
-            </p>
+            <span class="chip chip--accent">Our Mission</span>
+            <p class="display-3" style="margin-top:1rem">{about.missionDirection}</p>
           </article>
         </Reveal>
       </div>
@@ -89,11 +228,11 @@ import { leadership } from '../data/people';
   <section class="section">
     <div class="container">
       <SectionHeading
-        eyebrow="Values"
+        eyebrow="Our Values"
         title="The standards we hold ourselves to."
-        lede="These are working definitions. Wording will be refined with the company before launch."
+        lede="Working definitions — to be refined with the company before launch."
       />
-      <div class="grid-3">
+      <div class="grid-4">
         {
           values.map((value, index) => (
             <Reveal delay={index * 60}>
@@ -109,77 +248,109 @@ import { leadership } from '../data/people';
     </div>
   </section>
 
-  <!-- Leadership -->
-  <section class="section section--tight band band--dark">
+  <!-- People, Partnerships and Opportunity -->
+  <section class="band band--dark section">
     <div class="container">
       <SectionHeading
-        eyebrow="Leadership"
-        title="The team behind the enterprise."
+        eyebrow="Partnerships"
+        title="People, Partnerships and Opportunity."
+        lede={about.relationshipsStatement}
         dark
-      />
-      {
-        leadership.length > 0 ? (
-          <div class="grid-3">
-            {
-              leadership.map((member) => (
-                <article class="card">
-                  <h3>{member.name}</h3>
-                  <p class="chip chip--accent" style="margin-top:.5rem">{member.role}</p>
-                  {member.bio && <p style="margin-top:1rem">{member.bio}</p>}
-                </article>
-              ))
-            }
-          </div>
-        ) : (
-          <EmptyState
-            tone="dark"
-            title="Leadership profiles will be published once confirmed."
-            note="No leadership information has been provided, so none is shown. The profile layout below is ready for real team members."
-          >
-            <div class="grid-3" style="margin-top:1.25rem">
-              {[0, 1, 2].map((_) => (
-                <div class="empty-state empty-state--dark" aria-hidden="true">
-                  <span class="empty-state__mark" style="filter:grayscale(1)">{'▣'}</span>
-                  <h3>Profile slot</h3>
-                  <p>Name, role, and biography — pending company input.</p>
-                </div>
-              ))}
-            </div>
-          </EmptyState>
-        )
-      }
-    </div>
-  </section>
-
-  <!-- Operations bridge -->
-  <section class="section">
-    <div class="container">
-      <SectionHeading
-        eyebrow="Operations"
-        title="How we work — from ground to market."
-        lede="A summary of verified operational coverage will live here. Operations are currently awaiting official confirmation."
-      />
-      <Reveal>
-        <div class="empty-state" style="margin-top:1.25rem">
-          <h3>Operational outline forthcoming.</h3>
-          <p>
-            Coverage, locations, and flow from source to market will be documented here as they
-            are verified. Until then, see the approach framework on the What We Do page.
+      >
+        <Reveal delay={80}>
+          <p class="text-on-dark-dim" style="margin-top:1rem">
+            We are building a business that operates best in relationship with the people around it —
+            from the farm gate to the final market. No current partnerships are claimed here; these
+            are the relationships a business like ours is built on.
           </p>
-          <div style="margin-top:.5rem">
-            <a class="btn btn--ghost" href="/what-we-do/">See our approach</a>
-          </div>
+        </Reveal>
+      </SectionHeading>
+      <Reveal>
+        <div class="chips-wrap">
+          {
+            partnershipGroups.map((group) => (
+              <span class="chip chip--on-dark">{group}</span>
+            ))
+          }
         </div>
       </Reveal>
     </div>
   </section>
 
+  <!-- Export positioning -->
+  <section class="section">
+    <div class="container">
+      <div class="split-grid split-grid--reverse">
+        <SectionHeading
+          eyebrow="Export Mindset"
+          title="From Local Value to Wider Markets."
+          lede="Agricultural products and quality goods can create value far beyond their point of production when they are properly sourced, handled and connected with appropriate markets. ANICET FARMS aims to participate in that value chain — supporting the movement of quality goods across borders."
+        />
+        <Reveal delay={140}>
+          <figure class="photo-frame">
+            <img
+              src="/img/farming/harvesting.jpeg"
+              alt="Harvested crops gathered from the farm"
+              width="1280"
+              height="853"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
   <CtaBand
     eyebrow="Get In Touch"
-    title="Talk to the team about working together."
+    title="Talk to the team about agriculture, sourcing or export."
+    lede="Send an enquiry about products, partnerships or operations — the right person will respond."
     actions={[
       { label: 'Contact us on WhatsApp', variant: 'accent', whatsapp: true },
       { label: 'What We Do', href: '/what-we-do/', variant: 'ghost-dark' },
+      { label: 'Products', href: '/products/', variant: 'ghost-dark' },
     ]}
   />
 </BaseLayout>
+
+<style>
+  /* Five equal process steps — horizontal on desktop, stacked on mobile.
+     Higher specificity than the global .chain rules so it wins cleanly. */
+  .chain.about-chain {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  @media (max-width: 1200px) {
+    .chain.about-chain {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 900px) {
+    .chain.about-chain {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .chain.about-chain {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .feature-card__media--mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-background-alt);
+    color: var(--color-muted);
+    font-size: 1.75rem;
+  }
+
+  .chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+</style>

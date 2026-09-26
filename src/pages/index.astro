@@ -12,7 +12,7 @@ import ValueChain from '../components/ValueChain.astro';
 import CtaBand from '../components/CtaBand.astro';
 import MobileHeroSlider from '../components/MobileHeroSlider.astro';
 import MobileFeatures from '../components/MobileFeatures.astro';
-import { company, mission, vision, values } from '../data/company';
+import { company, about, businessAreas, values } from '../data/company';
 import { capabilities } from '../data/services';
 
 const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partnership-first'];
@@ -139,39 +139,62 @@ const heroSlides = [
   <MobileHeroSlider />
   <MobileFeatures />
 
-  <!-- ================================================= WHO WE ARE -->
+  <!-- ============================================== ABOUT ANICET FARMS -->
   <section class="section" id="who-we-are">
     <div class="container">
-      <div class="split-grid">
-        <div>
-          <SectionHeading
-            eyebrow="Who We Are"
-            title="A professional agricultural enterprise."
-            lede="ANICET FARMS LIMITED is positioned to serve clients, partners, and institutions with disciplined, dependable agricultural operations."
-          >
-            <Reveal delay={100}>
-              <p class="lede" style="margin-top:1.25rem">
-                Until the company's official profile is finalised, this section will carry the
-                verified story. The architecture below is ready for that content.
-              </p>
-            </Reveal>
-          </SectionHeading>
-        </div>
-        <Reveal delay={120}>
-          <div class="about-card card">
-            <p class="eyebrow">Mission &amp; Vision</p>
-            <h3 class="display-3" style="margin-top:1.25rem">To be defined with the company.</h3>
-            {
-              mission === null && vision === null && (
-                <p style="margin-top:1rem">
-                  Verified mission and vision statements will replace this placeholder when
-                  provided. <!-- TODO: populate mission/vision from verified company copy. -->
-                </p>
-              )
-            }
-          </div>
+      <SectionHeading
+        eyebrow="About ANICET FARMS"
+        title="Growing Quality. Connecting Markets. Creating Opportunities."
+        lede={about.intro}
+      >
+        <Reveal delay={100}>
+          <p class="lede" style="margin-top:1.25rem">{about.bridge}</p>
         </Reveal>
-      </div>
+      </SectionHeading>
+
+      <Reveal>
+        <ul class="about-preview">
+          {
+            businessAreas.map((area) => (
+              <li class="about-preview__item">
+                {area.image ? (
+                  <figure class="about-preview__media">
+                    <img
+                      src={area.image}
+                      alt={area.alt ?? area.title}
+                      width="1280"
+                      height="720"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </figure>
+                ) : (
+                  <div class="about-preview__media about-preview__media--mark" aria-hidden="true">
+                    <span>◫</span>
+                  </div>
+                )}
+                <div class="about-preview__body">
+                  <h3>{area.title}</h3>
+                  <p>{area.summary}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </Reveal>
+
+      <Reveal>
+        <p class="about-preview__vision">
+          {about.visionSummary}
+        </p>
+      </Reveal>
+
+      <Reveal>
+        <div class="cta-row" style="margin-top:2rem">
+          <Button href="/about/" variant="accent" arrow size="lg">Learn More About Us</Button>
+          <Button href="/contact/" variant="ghost" size="lg">Work With Us</Button>
+        </div>
+      </Reveal>
     </div>
   </section>
 
@@ -243,6 +266,37 @@ const heroSlides = [
     </div>
   </section>
 
+  <!-- ==================================================== PRODUCTS -->
+  <section class="section">
+    <div class="container">
+      <div class="split-grid">
+        <div>
+          <SectionHeading
+            eyebrow="Products"
+            title="An honest product directory."
+            lede="The ANICET FARMS LIMITED catalogue will be published here once the company confirms its offer. Nothing is listed as fact before it is verified."
+          />
+        </div>
+        <Reveal delay={120}>
+          <div class="card">
+            <p class="eyebrow">Catalogue status</p>
+            <h3 class="display-3" style="margin-top:1.25rem">Being compiled, in full.</h3>
+            <p style="margin-top:1rem">
+              Product types, grades and availability will be added when confirmed.
+              Until then the product page states this openly instead of showing
+              estimates as fact.
+              <!-- TODO: populate src/data/products.ts with verified products. -->
+            </p>
+            <div class="cta-row">
+              <Button href="/products/" variant="ghost" arrow>View the products page</Button>
+              <WhatsAppButton label="Request the product list" variant="primary" />
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </div>
+  </section>
+
   <!-- ============================================= FARMING OPERATIONS -->
   <section class="section band band--sand">
     <div class="container">
@@ -292,37 +346,6 @@ const heroSlides = [
     </div>
   </section>
 
-  <!-- ==================================================== PRODUCTS -->
-  <section class="section">
-    <div class="container">
-      <div class="split-grid">
-        <div>
-          <SectionHeading
-            eyebrow="Products"
-            title="An honest product directory."
-            lede="The ANICET FARMS LIMITED catalogue will be published here once the company confirms its offer. Nothing is listed as fact before it is verified."
-          />
-        </div>
-        <Reveal delay={120}>
-          <div class="card">
-            <p class="eyebrow">Catalogue status</p>
-            <h3 class="display-3" style="margin-top:1.25rem">Being compiled, in full.</h3>
-            <p style="margin-top:1rem">
-              Product types, grades and availability will be added when confirmed.
-              Until then the product page states this openly instead of showing
-              estimates as fact.
-              <!-- TODO: populate src/data/products.ts with verified products. -->
-            </p>
-            <div class="cta-row">
-              <Button href="/products/" variant="ghost" arrow>View the products page</Button>
-              <WhatsAppButton label="Request the product list" variant="primary" />
-            </div>
-          </div>
-        </Reveal>
-      </div>
-    </div>
-  </section>
-
   <!-- ================================================ PARTNERSHIP / B2B -->
   <section class="section band band--dark">
     <div class="container">
@@ -363,6 +386,7 @@ const heroSlides = [
     lede="Speak to the team about products, partnerships, investment or employment."
     actions={[
       { label: 'Contact the enterprise', variant: 'accent', whatsapp: true },
+      { label: 'Contact page', href: '/contact/', variant: 'ghost-dark' },
       { label: 'About us', href: '/about/', variant: 'ghost-dark' },
     ]}
   />
@@ -373,3 +397,76 @@ const heroSlides = [
   const hero = document.querySelector<HTMLElement>('[data-hero-carousel]');
   if (hero) initHeroCarousel(hero);
 </script>
+
+<style>
+  .about-preview {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1.5rem;
+    padding: 0;
+    margin: 0;
+  }
+
+  .about-preview__item {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .about-preview__media {
+    margin: 0;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .about-preview__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .about-preview__media--mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-background-alt);
+    color: var(--color-muted);
+    font-size: 1.75rem;
+  }
+
+  .about-preview__body {
+    padding: 1.25rem;
+  }
+
+  .about-preview__body h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    margin-bottom: 0.5rem;
+  }
+
+  .about-preview__body p {
+    color: var(--color-muted);
+    line-height: var(--leading-relaxed);
+    margin: 0;
+  }
+
+  .about-preview__vision {
+    max-width: 58ch;
+    margin-top: 2.25rem;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+  }
+
+  @media (max-width: 640px) {
+    .about-preview {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
