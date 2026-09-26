@@ -1,6 +1,6 @@
 ---
-// Fixed mobile bottom navigation (max-width: 767px only). Four equal-width
-// tabs — Shop, My Account, Search, Wishlist — with real routes where pages
+// Fixed mobile bottom navigation (max-width: 767px only). Five equal-width
+// tabs — Home, Shop, My Account, Search, Wishlist — with real routes where pages
 // exist and intentional placeholders for account/cart for future commerce.
 // Wishlist uses the real count from src/data/shop.ts. The Search tab opens a
 // full-screen overlay reusing the existing <Search stack /> bar + scripts.
@@ -18,6 +18,7 @@ const isActive = (match: string) =>
   match === '/' ? currentPath === '/' : match !== '' && currentPath.startsWith(match);
 
 const tabs = [
+  { id: 'home', label: 'Home', href: '/', match: '/' },
   { id: 'shop', label: 'Shop', href: '/products/', match: '/products' },
   { id: 'search', label: 'Search', action: true, match: '' },
   { id: 'wishlist', label: 'Wishlist', href: '/wishlist/', match: '/wishlist' },
@@ -86,6 +87,14 @@ const tabs = [
                     aria-hidden="true"
                     focusable="false"
                   >
+                    {
+                      tab.id === 'home' && (
+                        <>
+                          <path d="M3.5 10.5 12 3.5l8.5 7" />
+                          <path d="M6 9.5V20.5h12V9.5" />
+                        </>
+                      )
+                    }
                     {
                       tab.id === 'shop' && (
                         <path d="M3.5 9.5 5 3.5h14l1.5 6M4 9.5V20h16V9.5M9.5 20v-6h5v6" />

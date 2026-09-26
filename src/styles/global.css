@@ -2274,14 +2274,14 @@ p {
     border-bottom: 1px solid var(--color-border);
   }
 
-  /* ---- Fixed bottom navigation: 4 equal tabs, ~64px tall + safe area ---- */
+  /* ---- Fixed bottom navigation: 5 equal tabs, ~64px tall + safe area ---- */
   .bottom-nav {
     z-index: 45;
     background: var(--color-surface);
     box-shadow: 0 -1px 8px rgb(36 33 27 / 0.08);
   }
   .bottom-nav__list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
   .bottom-nav__link {
     position: relative;

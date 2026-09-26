@@ -9,6 +9,7 @@ export interface NavItem {
 }
 
 export const primaryNav: NavItem[] = [
+  { label: 'Home', href: '/', match: '/' },
   { label: 'About', href: '/about/', match: '/about' },
   { label: 'What We Do', href: '/what-we-do/', match: '/what-we-do' },
   { label: 'Products', href: '/products/', match: '/products' },

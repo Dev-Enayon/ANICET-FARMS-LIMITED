@@ -21,7 +21,8 @@ interface Props {
 
 const { currentPath = '/' } = Astro.props;
 
-const isActive = (match: string) => currentPath.startsWith(match);
+const isActive = (match: string) =>
+  match === '/' ? currentPath === '/' : currentPath.startsWith(match);
 
 const announcement =
   'WELCOME TO ANICET FARMS LIMITED - WE SPECIALISE IN ALL FORM OF AFRICAN EXOTIC FOODS';
@@ -177,15 +178,6 @@ const brandLineTwo = brandWords.slice(-1)[0] ?? '';
     </div>
     <div class="site-menu__body">
       <ul class="site-menu__list">
-        <li>
-          <a
-            class="site-menu__link"
-            href="/"
-            aria-current={currentPath === '/' ? 'page' : undefined}
-          >
-            Home
-          </a>
-        </li>
         {
           primaryNav.map((item) => (
             <li>
