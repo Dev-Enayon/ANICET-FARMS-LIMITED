@@ -12,8 +12,12 @@ import ValueChain from '../components/ValueChain.astro';
 import CtaBand from '../components/CtaBand.astro';
 import MobileHeroSlider from '../components/MobileHeroSlider.astro';
 import MobileFeatures from '../components/MobileFeatures.astro';
+import ProductCategoryCard from '../components/ProductCategoryCard.astro';
+import ProductCarousel from '../components/ProductCarousel.astro';
+import ProductLightbox from '../components/ProductLightbox.astro';
 import { company, about, businessAreas, values } from '../data/company';
 import { capabilities } from '../data/services';
+import { productCategories, featuredCategory } from '../data/products';
 
 const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partnership-first'];
 
@@ -267,33 +271,56 @@ const heroSlides = [
   </section>
 
   <!-- ==================================================== PRODUCTS -->
-  <section class="section">
+  <section class="section" id="our-products">
     <div class="container">
       <div class="split-grid">
-        <div>
-          <SectionHeading
-            eyebrow="Products"
-            title="An honest product directory."
-            lede="The ANICET FARMS LIMITED catalogue will be published here once the company confirms its offer. Nothing is listed as fact before it is verified."
-          />
-        </div>
-        <Reveal delay={120}>
-          <div class="card">
-            <p class="eyebrow">Catalogue status</p>
-            <h3 class="display-3" style="margin-top:1.25rem">Being compiled, in full.</h3>
-            <p style="margin-top:1rem">
-              Product types, grades and availability will be added when confirmed.
-              Until then the product page states this openly instead of showing
-              estimates as fact.
-              <!-- TODO: populate src/data/products.ts with verified products. -->
-            </p>
-            <div class="cta-row">
-              <Button href="/products/" variant="ghost" arrow>View the products page</Button>
-              <WhatsAppButton label="Request the product list" variant="primary" />
+        <SectionHeading
+          eyebrow="Our Products"
+          title="Quality Goods. Wider Opportunities."
+          lede="ANICET FARMS builds its catalogue around trusted collections — vegetables, meat, farming and export-oriented goods — presented enquiry-first, with real entries published as they are verified."
+        >
+          <Reveal delay={100}>
+            <div class="cta-row" style="margin-top:1.25rem">
+              <Button href="/products/" variant="accent" arrow size="lg">Explore All Products</Button>
             </div>
-          </div>
+          </Reveal>
+        </SectionHeading>
+        <Reveal delay={140}>
+          <p class="lede">The Vegetables collection is already published, with each product photographed, described and ready to enquire about. Collections still being prepared are stated honestly — never shown as assumptions.</p>
         </Reveal>
       </div>
+
+      <Reveal>
+        <ul class="home-cat">
+          {
+            productCategories.map((category, index) => (
+              <li>
+                <ProductCategoryCard
+                  category={category}
+                  dense
+                  index={index + 1}
+                  exploreHref={`/products/#product-${category.id}`}
+                />
+              </li>
+            ))
+          }
+        </ul>
+      </Reveal>
+
+      {
+        featuredCategory && featuredCategory.products.length > 0 && (
+          <Reveal delay={80}>
+            <div class="featured">
+              <div class="featured__head">
+                <p class="eyebrow">Featured Collection</p>
+                <h3 class="display-3">{featuredCategory.name} — published now</h3>
+                <p class="lede">{featuredCategory.summary}</p>
+              </div>
+              <ProductCarousel category={featuredCategory} />
+            </div>
+          </Reveal>
+        )
+      }
     </div>
   </section>
 
@@ -390,15 +417,59 @@ const heroSlides = [
       { label: 'About us', href: '/about/', variant: 'ghost-dark' },
     ]}
   />
+
+  <ProductLightbox />
 </BaseLayout>
 
 <script>
   import { initHeroCarousel } from '../scripts/heroCarousel';
+  import { initProductCarousel } from '../scripts/productCarousel';
   const hero = document.querySelector<HTMLElement>('[data-hero-carousel]');
   if (hero) initHeroCarousel(hero);
+  initProductCarousel();
 </script>
 
 <style>
+  .home-cat {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 1000px) {
+    .home-cat {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .home-cat {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .featured {
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .featured__head {
+    max-width: 62ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .featured__head .display-3 {
+    margin-top: 0.5rem;
+  }
+
+  .featured__head .lede {
+    margin-top: 0.5rem;
+  }
+
   .about-preview {
     list-style: none;
     display: grid;

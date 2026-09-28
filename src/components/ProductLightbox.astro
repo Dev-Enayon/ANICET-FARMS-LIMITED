@@ -1,0 +1,212 @@
+---
+// Full-screen product image lightbox. Mounted once per page. Controlled by
+// src/scripts/productLightbox.ts: opens on `product:open-image`, locks body
+// scroll, traps focus, restores focus on close. Escape / backdrop click close;
+// arrow keys and the edge controls navigate.
+
+// One dialog per page — raised above all site chrome.
+---
+
+<div
+  class="plightbox"
+  data-product-lightbox
+  role="dialog"
+  aria-modal="true"
+  aria-label="Product image viewer"
+  aria-hidden="true"
+  inert
+>
+  <div class="plightbox__backdrop" data-lightbox-backdrop></div>
+
+  <div class="plightbox__stage">
+    <button
+      class="plightbox__btn plightbox__close"
+      type="button"
+      data-lightbox-close
+      aria-label="Close product image viewer"
+    >
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+        <path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    <button
+      class="plightbox__btn plightbox__nav plightbox__nav--prev"
+      type="button"
+      data-lightbox-prev
+      aria-label="Previous product image"
+    >
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+        <path d="M14 5l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+    <button
+      class="plightbox__btn plightbox__nav plightbox__nav--next"
+      type="button"
+      data-lightbox-next
+      aria-label="Next product image"
+    >
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+        <path d="M8 5l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <figure class="plightbox__figure">
+      <img data-lightbox-img alt="" />
+    </figure>
+
+    <div class="plightbox__meta">
+      <p class="plightbox__caption" data-lightbox-meta></p>
+      <p class="plightbox__count" data-lightbox-count></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initProductLightbox } from '../scripts/productLightbox';
+  initProductLightbox();
+</script>
+
+<style>
+  .plightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 260ms var(--ease-out),
+      visibility 260ms;
+  }
+
+  .plightbox.is-open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .plightbox__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(17 14 9 / 0.88);
+    backdrop-filter: blur(3px);
+  }
+
+  .plightbox__stage {
+    position: relative;
+    z-index: 1;
+    width: min(92vw, 1120px);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .plightbox__figure {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .plightbox__figure img {
+    display: block;
+    max-width: 100%;
+    max-height: 72vh;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    background: var(--color-surface);
+  }
+
+  .plightbox__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    text-align: center;
+    color: var(--color-on-dark);
+  }
+
+  .plightbox__caption {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .plightbox__caption span {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--color-on-dark-dim);
+    max-width: 52ch;
+  }
+
+  .plightbox__count {
+    margin: 0;
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-on-dark-dim);
+  }
+
+  .plightbox__btn {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgb(244 240 230 / 0.28);
+    background: rgb(36 33 27 / 0.6);
+    color: var(--color-on-dark);
+    cursor: pointer;
+    transition:
+      background-color var(--duration) ease,
+      color var(--duration) ease;
+  }
+
+  .plightbox__btn:hover:not(:disabled) {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    border-color: var(--color-accent);
+  }
+
+  .plightbox__btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .plightbox__close {
+    top: 1rem;
+    inset-inline-end: 1rem;
+  }
+
+  .plightbox__nav--prev {
+    inset-inline-start: 0;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  .plightbox__nav--next {
+    inset-inline-end: 0;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  @media (max-width: 640px) {
+    .plightbox__nav {
+      top: auto;
+      bottom: 0.25rem;
+      translate: 0 0;
+    }
+  }
+</style>

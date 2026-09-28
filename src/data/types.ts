@@ -32,6 +32,11 @@ export interface Product {
   unit?: string;
   availability?: 'in-stock' | 'request-information' | 'unconfirmed';
   image?: string;
+  /** Descriptive alt text for the product photograph. */
+  imageAlt?: string;
+  /** Intrinsic image dimensions (prevents layout shift). */
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 export interface LeadershipMember {

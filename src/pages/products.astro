@@ -1,6 +1,8 @@
 ---
-// Products — enquiry-first catalogue. Products render only from verified data.
-// Until then: an honest empty state plus the catalogue anatomy.
+// Products — premium agricultural / export catalogue, enquiry-first.
+// Renders purely from productCategories (src/data/products.ts). Categories
+// without verified products show an honest "being prepared" state instead of
+// fabricated cards. Interaction is powered by the shared carousel + lightbox.
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
@@ -8,107 +10,220 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Reveal from '../components/Reveal.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import EmptyState from '../components/EmptyState.astro';
-import WhatsAppButton from '../components/WhatsAppButton.astro';
 import CtaBand from '../components/CtaBand.astro';
-import { products, catalogueNote } from '../data/products';
+import ProductCategoryCard from '../components/ProductCategoryCard.astro';
+import ProductCarousel from '../components/ProductCarousel.astro';
+import ProductLightbox from '../components/ProductLightbox.astro';
+import { productCategories } from '../data/products';
+
+const sourcingPrinciples = [
+  {
+    step: 'Source',
+    description:
+      'Product sourcing and agricultural production form the start of every collection. Verified sourcing relationships are documented here as they are confirmed.',
+  },
+  {
+    step: 'Quality',
+    description:
+      'Careful attention to handling, preparation and presentation at every stage — the basis of dependable supply for quality-focused customers and markets.',
+  },
+  {
+    step: 'Enquiry',
+    description:
+      'Every entry is enquiry-first. Request information for the verified details you need, and the team responds directly.',
+  },
+];
 ---
 
 <BaseLayout
   title="Products"
-  description="ANICET FARMS LIMITED product catalogue — built enquiry-first with request information."
+  description="ANICET FARMS product catalogue — enquiry-first collections across vegetables, meat, farming and export-oriented goods, built with verified entries and a straightforward request path."
   path="/products/"
 >
   <PageHero
-    eyebrow="Products"
-    title="Enquiry-first product information."
-    lede={catalogueNote}
+    eyebrow="Products · ANICET FARMS"
+    title="Products That Connect Agriculture With Opportunity."
+    lede="ANICET FARMS presents its collections as an export-aware catalogue: real products are listed the moment they are verified, and each entry carries a straightforward path to request information. Collections still being prepared state this openly."
   >
     <Breadcrumbs slot="breadcrumbs" items={[{ name: 'Products' }]} />
-    <span class="chip chip--on-dark">No e-commerce</span>
-    <span class="chip chip--on-dark">Request-based</span>
+    <span class="chip chip--on-dark">Enquiry-first</span>
+    <span class="chip chip--on-dark">Four collections</span>
+    <span class="chip chip--on-dark">Export-oriented</span>
   </PageHero>
 
-  <!-- Catalogue -->
-  <section class="section">
+  <!-- Category navigation -->
+  <section class="section section--tight">
     <div class="container">
-      <SectionHeading
-        eyebrow="Catalogue"
-        title="What we will offer."
-        lede="Products are listed only when specifications have been verified. This page is structured so a full catalogue can publish the moment the data arrives."
-      />
-      {
-        products.length > 0 ? (
-          <div class="grid-3">
-            {
-              products.map((product) => (
-                <article class="card">
-                  <span class="chip chip--accent">
-                    {product.availability === 'in-stock'
-                      ? 'Available'
-                      : product.availability === 'request-information'
-                        ? 'Request information'
-                        : 'Pending specification'}
-                  </span>
-                  <h3>{product.name}</h3>
-                  <p>{product.description}</p>
-                  <WhatsAppButton label="Request information" variant="ghost" size="sm" />
-                </article>
-              ))
-            }
-          </div>
-        ) : (
-          <Reveal>
-            <EmptyState
-              title="The catalogue will be published once specifications are confirmed."
-              note="No product or specification claims are made until verified. When confirmed, each entry will display name, category, and unit details — always with a straightforward path to request information."
-            >
-              <!-- Catalogue anatomy preview (decorative, labelled as a structure slot) -->
-              <div class="grid-3" style="margin-top:1.5rem">
-                {[0, 1, 2].map((_) => (
-                  <div class="empty-state" aria-hidden="true" style="padding:1.5rem">
-                    <div class="empty-state__mark" aria-hidden="true">◫</div>
-                    <h3 style="font-size:1.05rem">Product listing</h3>
-                    <p style="margin:0">
-                      Confirmed specifications, category, and unit details appear here.
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </EmptyState>
-          </Reveal>
-        )
-      }
+      <Reveal>
+        <nav class="cat-nav" aria-label="Product categories">
+          {productCategories.map((category, index) => (
+            <a href={`#product-${category.id}`}>
+              <span class="cat-nav__num">{String(index + 1).padStart(2, '0')}</span>
+              {category.name}
+            </a>
+          ))}
+        </nav>
+      </Reveal>
     </div>
   </section>
 
-  <!-- Sourcing principles -->
-  <section class="section section--tight band band--sand">
+  <!-- Category sections: alternating card / carousel composition -->
+  {
+    productCategories.map((category, index) => (
+      <section
+        id={`product-${category.id}`}
+        class:list={['cat', 'section', index % 2 === 1 && 'band band--sand section--tight']}
+      >
+        <div class="container">
+          <SectionHeading
+            eyebrow={`Collection ${String(index + 1).padStart(2, '0')}`}
+            title={category.name}
+            lede={category.summary}
+          />
+
+          <div class:list={['cat-layout', index % 2 === 1 && 'cat-layout--reverse']}>
+            <Reveal delay={index * 60}>
+              <ProductCategoryCard category={category} index={index + 1} />
+            </Reveal>
+            <Reveal delay={index * 60 + 80}>
+              {category.products.length > 0 ? (
+                <div id={`product-${category.id}-carousel`} class="cat-layout__carousel">
+                  <ProductCarousel category={category} />
+                </div>
+              ) : (
+                <div id={`product-${category.id}-carousel`} class="cat-layout__carousel">
+                  <div class="cat-empty">
+                    <EmptyState
+                      title="Products in this collection are being prepared for display."
+                      note="No product details are published until verified. When confirmed, each entry will show its name, category and a straightforward path to request information."
+                    />
+                  </div>
+                </div>
+              )}
+            </Reveal>
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <!-- Sourcing / quality / enquiry -->
+  <section class="section band band--sand">
     <div class="container">
       <SectionHeading
-        eyebrow="Sourcing"
-        title="Where our products come from."
-        lede="Verified sourcing and production relationships will be documented here when confirmed."
+        eyebrow="Source · Quality · Enquiry"
+        title="How the catalogue stays dependable."
+        lede="Three working principles shape every collection — presented honestly, with verified detail added as operations are confirmed."
       />
-      <Reveal>
-        <div class="empty-state">
-          <h3>Sourcing transparency, once confirmed.</h3>
-          <p>
-            We intend to be clear about origin, handling, and production at every step. This
-            section will carry those verified details as they become available.
-            <!-- TODO: populate src/data/products.ts with verified product + sourcing data. -->
-          </p>
-        </div>
-      </Reveal>
+      <div class="grid-3">
+        {
+          sourcingPrinciples.map((principle, index) => (
+            <Reveal delay={index * 70}>
+              <article class="card">
+                <span class="card__index">{String(index + 1).padStart(2, '0')}</span>
+                <h3>{principle.step}</h3>
+                <p>{principle.description}</p>
+              </article>
+            </Reveal>
+          ))
+        }
+      </div>
     </div>
   </section>
 
   <CtaBand
     eyebrow="Request Information"
-    title="Interested in our product range?"
-    lede="Send an enquiry and the team will respond with verified details."
+    title="Building the catalogue, one collection at a time."
+    lede="Send an enquiry about any product or collection — the team will respond with the verified details you need."
     actions={[
       { label: 'Request information', variant: 'accent', whatsapp: true },
       { label: 'What We Do', href: '/what-we-do/', variant: 'ghost-dark' },
+      { label: 'About us', href: '/about/', variant: 'ghost-dark' },
     ]}
   />
+
+  <ProductLightbox />
 </BaseLayout>
+
+<script>
+  import { initProductCarousel } from '../scripts/productCarousel';
+  initProductCarousel();
+</script>
+
+<style>
+  .cat {
+    scroll-margin-top: 6rem;
+  }
+
+  /* Category card + carousel composition (alternates each section). */
+  .cat-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 440px) 1fr;
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: start;
+  }
+
+  .cat-layout--reverse {
+    grid-template-columns: 1fr minmax(0, 440px);
+  }
+
+  .cat-layout__carousel {
+    min-width: 0;
+  }
+
+  @media (max-width: 1100px) {
+    .cat-layout,
+    .cat-layout--reverse {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .cat-empty {
+    padding-top: 0.25rem;
+  }
+
+  /* Small screens: the category card is deliberately hidden so the product
+     slider owns the space (the centred H2 + summary already read as the
+     category's intro). */
+  @media (max-width: 767px) {
+    .cat-layout :global(.catcard),
+    .cat-layout--reverse :global(.catcard) {
+      display: none;
+    }
+  }
+
+  .cat-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .cat-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    font-weight: 650;
+    text-decoration: none;
+    transition:
+      background-color var(--duration) ease,
+      border-color var(--duration) ease,
+      color var(--duration) ease;
+  }
+
+  .cat-nav a:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-on-dark);
+  }
+
+  .cat-nav__num {
+    font-family: var(--font-display);
+    color: var(--color-accent);
+  }
+</style>
