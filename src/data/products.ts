@@ -21,6 +21,12 @@
 
 import type { Product } from './types';
 
+export interface CardImage {
+  src: string;
+  /** Honest alt text describing exactly what this photograph shows. */
+  alt: string;
+}
+
 export interface ProductCategory {
   id: string;
   name: string;
@@ -28,6 +34,10 @@ export interface ProductCategory {
   /** Large category card image (served copy). Omit when no honest image exists. */
   cardImage?: string;
   cardImageAlt?: string;
+  /** Ordered images for the auto-sliding collection card. Provide two or more to
+      enable the slide show; a single entry renders statically. Omit when no
+      honest imagery exists (the card then shows its placeholder surface). */
+  cardImages?: CardImage[];
   products: Product[];
 }
 
@@ -39,6 +49,22 @@ export const productCategories: ProductCategory[] = [
       'Quality agricultural produce sourced and presented for customers and markets seeking dependable fresh produce.',
     cardImage: '/img/product-card/vegetables.jpg',
     cardImageAlt: 'Fresh vegetable produce displayed for market presentation',
+    cardImages: [
+      {
+        src: '/img/hero/hero-vegetables.jpeg',
+        alt: 'Fresh green vegetables growing in an agricultural field',
+      },
+      {
+        src: '/img/product-card/vegetables.jpg',
+        alt: 'Fresh vegetable produce displayed for market presentation',
+      },
+      { src: '/img/products/vegetables/bitter-leaf.png', alt: 'Photograph of Bitter Leaf' },
+      {
+        src: '/img/products/vegetables/ugu.png',
+        alt: 'Photograph of Ugwu (Fluted Pumpkin Leaf)',
+      },
+      { src: '/img/products/vegetables/water-leaf.png', alt: 'Photograph of Water Leaf' },
+    ],
     products: [
       {
         id: 'bitter-leaf',
@@ -85,6 +111,14 @@ export const productCategories: ProductCategory[] = [
       'Meat products presented with emphasis on careful sourcing, handling and dependable supply.',
     cardImage: '/img/hero/hero-meat-seafood.jpeg',
     cardImageAlt: 'Fresh meat, seafood, poultry and eggs',
+    // Only one honest meat/sourcing photograph exists at this time, so this
+    // card renders the single image statically (no slide show yet).
+    cardImages: [
+      {
+        src: '/img/hero/hero-meat-seafood.jpeg',
+        alt: 'Fresh meat, seafood, poultry and eggs',
+      },
+    ],
     products: [],
   },
   {
@@ -94,6 +128,16 @@ export const productCategories: ProductCategory[] = [
       'Agricultural production and farming activities supporting the wider ANICET FARMS value chain.',
     cardImage: '/img/product-card/farming.jpg',
     cardImageAlt: 'Agricultural field landscape',
+    cardImages: [
+      { src: '/img/product-card/farming.jpg', alt: 'Agricultural field landscape' },
+      { src: '/img/farming/farm-field1.jpeg', alt: 'Green agricultural field landscape' },
+      {
+        src: '/img/farming/farming-operation.jpg',
+        alt: 'Agricultural machinery operating in a farm field',
+      },
+      { src: '/img/farming/harvesting.jpeg', alt: 'Harvested crops gathered from the farm' },
+      { src: '/img/hero/hero-farm.jpeg', alt: 'Agricultural farmland landscape' },
+    ],
     products: [],
   },
   {

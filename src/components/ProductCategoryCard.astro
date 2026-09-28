@@ -3,8 +3,9 @@
 // when the category has no owner-supplied image) with a gradient scrim, the
 // category name in display type, a short summary and an "Explore Collection"
 // affordance. `dense` produces the compact grid variant used on the homepage.
+// The `full` variant accepts multiple images and auto-slides between them.
 
-import type { ProductCategory } from '../data/products';
+import type { ProductCategory, CardImage } from '../data/products';
 
 interface Props {
   category: ProductCategory;
@@ -13,33 +14,71 @@ interface Props {
   dense?: boolean;
   /** Shelf variant: stretches to the adjacent product carousel row on desktop. */
   shelf?: boolean;
+  /** Full-width variant: stretches across the whole section container (used
+      when a collection has no product carousel to sit beside). */
+  full?: boolean;
   /** Ordinal for the "Collection N" eyebrow (optional). */
   index?: number;
 }
 
-const { category, exploreHref = `#product-${category.id}-carousel`, dense = false, shelf = false, index } = Astro.props;
+const { category, exploreHref = `#product-${category.id}-carousel`, dense = false, shelf = false, full = false, index } = Astro.props;
+
+// Single source of slide imagery: prefer the collection's ordered cardImages,
+// then fall back to the single cardImage, then to no imagery (placeholder).
+const slides: CardImage[] =
+  category.cardImages && category.cardImages.length > 0
+    ? category.cardImages
+    : category.cardImage
+      ? [{ src: category.cardImage, alt: category.cardImageAlt ?? category.name }]
+      : [];
+const primary = slides[0] ?? undefined;
+const showSlideshow = full && slides.length > 1;
 ---
 
 <a
-  class:list={['catcard', dense && 'catcard--dense', shelf && 'catcard--shelf']}
+  class:list={['catcard', dense && 'catcard--dense', shelf && 'catcard--shelf', full && 'catcard--full']}
   href={exploreHref}
   aria-label={`Explore the ${category.name} collection`}
 >
-  {category.cardImage ? (
-    <img
-      class="catcard__photo"
-      src={category.cardImage}
-      alt={category.cardImageAlt ?? category.name}
-      width={1280}
-      height={853}
-      loading="lazy"
-      decoding="async"
-    />
-  ) : (
-    <span class="catcard__photo catcard__photo--texture" aria-hidden="true">
-      <span class="catcard__mark">◫</span>
-    </span>
-  )}
+  {
+    showSlideshow ? (
+      <span class="catcard__slides" data-catcard-slides>
+        {
+          slides.map((slide, slideIndex) => (
+            <img
+              class="catcard__photo"
+              data-catcard-slide
+              src={slide.src}
+              alt={slide.alt}
+              width={1280}
+              height={853}
+              loading={slideIndex === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              style={`opacity:${slideIndex === 0 ? 1 : 0}`}
+              aria-hidden={slideIndex === 0 ? undefined : 'true'}
+            />
+          ))
+        }
+        <span class="catcard__count" data-catcard-count aria-hidden="true">
+          1 / {slides.length}
+        </span>
+      </span>
+    ) : primary ? (
+      <img
+        class="catcard__photo"
+        src={primary.src}
+        alt={primary.alt}
+        width={1280}
+        height={853}
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <span class="catcard__photo catcard__photo--texture" aria-hidden="true">
+        <span class="catcard__mark">◫</span>
+      </span>
+    )
+  }
 
   <span class="catcard__scrim" aria-hidden="true"></span>
 
@@ -190,4 +229,108 @@ const { category, exploreHref = `#product-${category.id}-carousel`, dense = fals
       overflow: hidden;
     }
   }
+
+  /* Full-width variant (used on the Products page where a collection has no
+     product carousel): stretches across the whole section container. The
+     internal layout (image, kicker, title, desc, link) is untouched — only
+     scaled up to fit the wider canvas. Placed last so it wins over the base
+     and breakpoint rules above. */
+  .catcard--full {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+  @media (min-width: 1024px) {
+    .catcard--full {
+      aspect-ratio: 21 / 9;
+    }
+
+    .catcard--full .catcard__kicker {
+      font-size: var(--text-sm);
+    }
+
+    .catcard--full .catcard__title {
+      font-size: clamp(2rem, 3vw, 3rem);
+    }
+
+    .catcard--full .catcard__desc {
+      font-size: var(--text-md);
+      max-width: 52ch;
+    }
+
+    .catcard--full .catcard__link {
+      font-size: var(--text-md);
+    }
+  }
+
+  /* Auto-sliding image cross-fade for the full-width collection cards.
+     Each slide sits absolutely inside the slides region (z-index 0), so the
+     scrim and body text always render above the photos. */
+  .catcard__slides {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .catcard__slides .catcard__photo {
+    transition:
+      opacity 700ms var(--ease-out),
+      transform 600ms var(--ease-out);
+  }
+
+  .catcard__count {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-pill);
+    background: rgb(36 33 27 / 0.55);
+    color: var(--color-on-dark);
+    font-family: var(--font-display);
+    font-size: var(--text-xs);
+    letter-spacing: 0.12em;
+    line-height: 1;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Slow Ken-Burns drift on the slide being shown, so the auto-scroll reads as
+     a gentle, living motion rather than a hard image swap. The animation only
+     exists on the active slide (see catCardSlideshow.ts) and is held in place
+     (fill both), so an inactive slide returning to its base transform is never
+     visible. */
+  .catcard__slides .catcard__photo.is-active {
+    animation: catcard-drift 9s var(--ease-out) both;
+  }
+
+  /* Pause the drift while the card is hovered or focused (the slide-show
+     already pauses on hover/focus via JS, so both stay in lockstep). */
+  .catcard:hover .catcard__slides .catcard__photo.is-active,
+  .catcard:focus-within .catcard__slides .catcard__photo.is-active {
+    animation-play-state: paused;
+  }
+
+  @keyframes catcard-drift {
+    from {
+      transform: scale(1) translate3d(0, 0, 0);
+    }
+    to {
+      transform: scale(1.08) translate3d(-1.5%, 0.75%, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .catcard__slides .catcard__photo.is-active {
+      animation: none;
+    }
+  }
 </style>
+
+<script>
+  import { initCatCardSlideshow } from '../scripts/catCardSlideshow';
+  initCatCardSlideshow();
+</script>

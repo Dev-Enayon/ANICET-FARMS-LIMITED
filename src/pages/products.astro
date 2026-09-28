@@ -1,19 +1,16 @@
 ---
 // Products — premium agricultural / export catalogue, enquiry-first.
-// Renders purely from productCategories (src/data/products.ts). Categories
-// without verified products show an honest "being prepared" state instead of
-// fabricated cards. Interaction is powered by the shared carousel + lightbox.
+// Renders purely from productCategories (src/data/products.ts). Each
+// collection renders as one full-width category card — nothing is invented,
+// and collections still being prepared simply show no product entries.
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Reveal from '../components/Reveal.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import EmptyState from '../components/EmptyState.astro';
 import CtaBand from '../components/CtaBand.astro';
 import ProductCategoryCard from '../components/ProductCategoryCard.astro';
-import ProductCarousel from '../components/ProductCarousel.astro';
-import ProductLightbox from '../components/ProductLightbox.astro';
 import { productCategories } from '../data/products';
 
 const sourcingPrinciples = [
@@ -67,8 +64,9 @@ const sourcingPrinciples = [
     </div>
   </section>
 
-  <!-- Category shelves: header row (heading + "See More Items") + divider +
-       card on the left / product shelf on the right, alternating sides. -->
+  <!-- Category shelves: header row (heading + divider) above each collection.
+       Every collection renders as one full-width category card — there is no
+       product carousel to page through. -->
   {
     productCategories.map((category, index) => (
       <section
@@ -83,37 +81,18 @@ const sourcingPrinciples = [
                 title={category.name}
                 lede={category.summary}
               />
-              <a class="shelf-head__more" href={`#product-${category.id}-carousel`}>
-                See More Items
-                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-                  <path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-              </a>
             </header>
             <div class="shelf-head__rule" aria-hidden="true"></div>
           </Reveal>
 
-          <div class:list={['shelf', index % 2 === 1 && 'shelf--reverse']}>
-            <Reveal class="shelf__card" delay={index * 60}>
-              <ProductCategoryCard category={category} index={index + 1} shelf />
-            </Reveal>
-            <Reveal class="shelf__panel" delay={index * 60 + 80}>
-              {category.products.length > 0 ? (
-                <div id={`product-${category.id}-carousel`} class="shelf__pad">
-                  <ProductCarousel category={category} />
-                </div>
-              ) : (
-                <div id={`product-${category.id}-carousel`} class="shelf__pad">
-                  <div class="shelf__empty">
-                    <EmptyState
-                      title="Products in this collection are being prepared for display."
-                      note="No product details are published until verified. When confirmed, each entry will show its name, category and a straightforward path to request information."
-                    />
-                  </div>
-                </div>
-              )}
-            </Reveal>
-          </div>
+          <Reveal class="cat-full">
+            <ProductCategoryCard
+              category={category}
+              index={index + 1}
+              full
+              exploreHref={`#product-${category.id}`}
+            />
+          </Reveal>
         </div>
       </section>
     ))
@@ -153,34 +132,23 @@ const sourcingPrinciples = [
       { label: 'About us', href: '/about/', variant: 'ghost-dark' },
     ]}
   />
-
-  <ProductLightbox />
 </BaseLayout>
-
-<script>
-  import { initProductCarousel } from '../scripts/productCarousel';
-  initProductCarousel();
-</script>
 
 <style>
   .cat {
     scroll-margin-top: 6rem;
   }
 
-  /* Desktop: empty collections fill the shelf height next to the card.
-     (.shelf__panel belongs to the Reveal/shared component → :global.) */
+  /* Full-width collection: the category card fills the section container
+     (no product carousel beside it). Keep the same vertical rhythm as the
+     two-column shelf so alignment with neighbouring sections holds. */
+  .cat-full {
+    display: block;
+  }
+
   @media (min-width: 1024px) {
-    :global(.shelf__panel) > * {
-      height: 100%;
-    }
-
-    .shelf__empty {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .shelf__empty .empty-state {
-      flex: 1;
+    .cat-full {
+      margin-top: clamp(1.75rem, 3.5vw, 2.75rem);
     }
   }
 
