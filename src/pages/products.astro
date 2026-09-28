@@ -67,7 +67,8 @@ const sourcingPrinciples = [
     </div>
   </section>
 
-  <!-- Category sections: alternating card / carousel composition -->
+  <!-- Category shelves: header row (heading + "See More Items") + divider +
+       card on the left / product shelf on the right, alternating sides. -->
   {
     productCategories.map((category, index) => (
       <section
@@ -75,24 +76,35 @@ const sourcingPrinciples = [
         class:list={['cat', 'section', index % 2 === 1 && 'band band--sand section--tight']}
       >
         <div class="container">
-          <SectionHeading
-            eyebrow={`Collection ${String(index + 1).padStart(2, '0')}`}
-            title={category.name}
-            lede={category.summary}
-          />
+          <Reveal>
+            <header class="shelf-head">
+              <SectionHeading
+                eyebrow={`Collection ${String(index + 1).padStart(2, '0')}`}
+                title={category.name}
+                lede={category.summary}
+              />
+              <a class="shelf-head__more" href={`#product-${category.id}-carousel`}>
+                See More Items
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                  <path d="M1 8h13M9 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </header>
+            <div class="shelf-head__rule" aria-hidden="true"></div>
+          </Reveal>
 
-          <div class:list={['cat-layout', index % 2 === 1 && 'cat-layout--reverse']}>
-            <Reveal delay={index * 60}>
-              <ProductCategoryCard category={category} index={index + 1} />
+          <div class:list={['shelf', index % 2 === 1 && 'shelf--reverse']}>
+            <Reveal class="shelf__card" delay={index * 60}>
+              <ProductCategoryCard category={category} index={index + 1} shelf />
             </Reveal>
-            <Reveal delay={index * 60 + 80}>
+            <Reveal class="shelf__panel" delay={index * 60 + 80}>
               {category.products.length > 0 ? (
-                <div id={`product-${category.id}-carousel`} class="cat-layout__carousel">
+                <div id={`product-${category.id}-carousel`} class="shelf__pad">
                   <ProductCarousel category={category} />
                 </div>
               ) : (
-                <div id={`product-${category.id}-carousel`} class="cat-layout__carousel">
-                  <div class="cat-empty">
+                <div id={`product-${category.id}-carousel`} class="shelf__pad">
+                  <div class="shelf__empty">
                     <EmptyState
                       title="Products in this collection are being prepared for display."
                       note="No product details are published until verified. When confirmed, each entry will show its name, category and a straightforward path to request information."
@@ -155,40 +167,20 @@ const sourcingPrinciples = [
     scroll-margin-top: 6rem;
   }
 
-  /* Category card + carousel composition (alternates each section). */
-  .cat-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 440px) 1fr;
-    gap: clamp(1.5rem, 3vw, 3rem);
-    align-items: start;
-  }
-
-  .cat-layout--reverse {
-    grid-template-columns: 1fr minmax(0, 440px);
-  }
-
-  .cat-layout__carousel {
-    min-width: 0;
-  }
-
-  @media (max-width: 1100px) {
-    .cat-layout,
-    .cat-layout--reverse {
-      grid-template-columns: 1fr;
+  /* Desktop: empty collections fill the shelf height next to the card.
+     (.shelf__panel belongs to the Reveal/shared component → :global.) */
+  @media (min-width: 1024px) {
+    :global(.shelf__panel) > * {
+      height: 100%;
     }
-  }
 
-  .cat-empty {
-    padding-top: 0.25rem;
-  }
+    .shelf__empty {
+      display: flex;
+      flex-direction: column;
+    }
 
-  /* Small screens: the category card is deliberately hidden so the product
-     slider owns the space (the centred H2 + summary already read as the
-     category's intro). */
-  @media (max-width: 767px) {
-    .cat-layout :global(.catcard),
-    .cat-layout--reverse :global(.catcard) {
-      display: none;
+    .shelf__empty .empty-state {
+      flex: 1;
     }
   }
 

@@ -200,4 +200,28 @@ const handle = `product-${product.id}`;
     gap: 0.6rem;
     margin-top: auto;
   }
+
+  /* Desktop only: catalogue-shelf card — image on top (1:1 photo well with
+     object-fit contain so the whole product stays visible), name below. */
+  @media (min-width: 1024px) {
+    .pcard__media {
+      order: -1;
+      margin: 0;
+      aspect-ratio: 1 / 1;
+      background: var(--color-background-alt);
+    }
+
+    .pcard__media img {
+      object-fit: contain;
+      padding: 0.75rem;
+    }
+
+    .pcard__top {
+      padding-top: 1.1rem;
+    }
+
+    .pcard__body {
+      padding-top: 0.9rem;
+    }
+  }
 </style>

@@ -135,7 +135,9 @@ const list = category.products;
     scroll-snap-align: start;
   }
 
-  @media (max-width: 1100px) {
+  /* Desktop shelf (>=1024px): 3 per view. Tablet: 2 per view. Mobile: a
+     single primary product per view. */
+  @media (min-width: 768px) and (max-width: 1023px) {
     .pcarousel__track {
       grid-auto-columns: calc((100% - 1.25rem) / 2);
     }

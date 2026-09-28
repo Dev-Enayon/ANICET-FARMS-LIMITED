@@ -2098,6 +2098,112 @@ p {
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Catalogue shelf — desktop product catalogue layout (products + homepage).
+   Row header: eyebrow/heading on the left, “See More Items” link on the right
+   (bottom-aligned to the heading), then a thin divider. Below: a two-column
+   shelf — large category card on the left (~26%) and the horizontal product
+   carousel on the right (~74%). Active at 1024px+; stacks gracefully below.
+   The category card is hidden on mobile (max-width: 767px) so the product
+   slider owns the space there — that mobile experience is unchanged.
+   --------------------------------------------------------------------------- */
+.shelf-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.shelf-head__more {
+  display: none;
+}
+
+.shelf-head__rule {
+  display: none;
+}
+
+.shelf {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: stretch;
+}
+
+.shelf__card,
+.shelf__panel {
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .shelf-head__more {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-sm);
+    font-weight: 650;
+    color: var(--color-accent);
+    text-decoration: none;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid rgb(192 85 44 / 0.4);
+    transition:
+      color var(--duration) ease,
+      border-color var(--duration) ease;
+  }
+
+  .shelf-head__more:hover {
+    color: var(--color-accent-hover);
+    border-color: var(--color-accent);
+  }
+
+  .shelf-head__more svg {
+    flex: none;
+  }
+
+  .shelf-head__rule {
+    display: block;
+    height: 1px;
+    margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
+    background: var(--color-border);
+  }
+
+  .shelf-head .has-heading-section {
+    margin-bottom: 0;
+  }
+
+  .shelf-head .has-heading-section__title {
+    max-width: none;
+  }
+
+  /* The category card carries the summary on desktop; avoid duplicating it. */
+  .shelf-head .has-heading-section .lede {
+    display: none;
+  }
+
+  .shelf {
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+    margin-top: clamp(1.75rem, 3.5vw, 2.75rem);
+  }
+
+  .shelf--reverse {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 24rem);
+  }
+
+  .shelf--reverse .shelf__card {
+    order: 2;
+  }
+
+  .shelf--reverse .shelf__panel {
+    order: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .shelf__card {
+    display: none;
+  }
+}
+
 /* ===========================================================================
    Mobile storefront — max-width: 767px
    Green palette, standalone header/search/drawer/banner/bottom-nav built for

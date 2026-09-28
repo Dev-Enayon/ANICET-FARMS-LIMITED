@@ -11,15 +11,17 @@ interface Props {
   /** Where "Explore Collection" points (defaults to the in-page carousel anchor). */
   exploreHref?: string;
   dense?: boolean;
+  /** Shelf variant: stretches to the adjacent product carousel row on desktop. */
+  shelf?: boolean;
   /** Ordinal for the "Collection N" eyebrow (optional). */
   index?: number;
 }
 
-const { category, exploreHref = `#product-${category.id}-carousel`, dense = false, index } = Astro.props;
+const { category, exploreHref = `#product-${category.id}-carousel`, dense = false, shelf = false, index } = Astro.props;
 ---
 
 <a
-  class:list={['catcard', dense && 'catcard--dense']}
+  class:list={['catcard', dense && 'catcard--dense', shelf && 'catcard--shelf']}
   href={exploreHref}
   aria-label={`Explore the ${category.name} collection`}
 >
@@ -156,6 +158,24 @@ const { category, exploreHref = `#product-${category.id}-carousel`, dense = fals
   @media (max-width: 1100px) {
     .catcard {
       aspect-ratio: 16 / 9;
+    }
+  }
+
+  /* Shelf variant: fill the row height beside the product carousel so the
+     card and product shelf read as one unit. Only on desktop. */
+  @media (min-width: 1024px) {
+    .catcard--shelf {
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 20rem;
+    }
+
+    .catcard--shelf .catcard__title {
+      font-size: clamp(1.35rem, 1.6vw, 1.85rem);
+    }
+
+    .catcard--shelf .catcard__desc {
+      font-size: var(--text-xs);
     }
   }
 
