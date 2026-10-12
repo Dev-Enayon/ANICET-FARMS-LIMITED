@@ -2,6 +2,9 @@
 // Homepage — editorial "modern agribusiness corporation" composition.
 // All copy is neutral/aspirational; nothing here invents facts about
 // ANICET FARMS LIMITED. TODO markers show where verified copy belongs.
+// Served on demand so the product sections reflect live admin edits.
+
+export const prerender = false;
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Reveal from '../components/Reveal.astro';
@@ -17,7 +20,10 @@ import ProductCarousel from '../components/ProductCarousel.astro';
 import ProductLightbox from '../components/ProductLightbox.astro';
 import { company, about, businessAreas, values } from '../data/company';
 import { capabilities } from '../data/services';
-import { productCategories, featuredCategory } from '../data/products';
+import { getCatalog, getFeaturedCategory } from '../lib/catalog';
+
+const productCategories = getCatalog();
+const featuredCategory = getFeaturedCategory();
 
 const metaChips = ['Enterprise agriculture', 'Professional operations', 'Partnership-first'];
 

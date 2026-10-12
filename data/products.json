@@ -1,0 +1,35 @@
+[
+  {
+    "id": "bitter-leaf",
+    "name": "Bitter Leaf",
+    "category": "Vegetables",
+    "description": "A traditional green leaf vegetable, prepared for quality presentation and dependable supply.",
+    "availability": "request-information",
+    "image": "/img/products/vegetables/bitter-leaf.png",
+    "imageAlt": "Photograph of Bitter Leaf",
+    "imageWidth": 1583,
+    "imageHeight": 994
+  },
+  {
+    "id": "ugwu",
+    "name": "Ugwu (Fluted Pumpkin Leaf)",
+    "category": "Vegetables",
+    "description": "Fluted pumpkin leaf, a widely used green vegetable, handled with care for quality-conscious customers and markets.",
+    "availability": "request-information",
+    "image": "/img/products/vegetables/ugu.png",
+    "imageAlt": "Photograph of Ugwu (Fluted Pumpkin Leaf)",
+    "imageWidth": 1672,
+    "imageHeight": 941
+  },
+  {
+    "id": "water-leaf",
+    "name": "Water Leaf",
+    "category": "Vegetables",
+    "description": "A tender leafy vegetable, prepared with attention to freshness, handling and market presentation.",
+    "availability": "request-information",
+    "image": "/img/products/vegetables/water-leaf.png",
+    "imageAlt": "Photograph of Water Leaf",
+    "imageWidth": 940,
+    "imageHeight": 1674
+  }
+]

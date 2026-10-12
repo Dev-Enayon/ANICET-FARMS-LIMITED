@@ -1,8 +1,8 @@
----
-// Product search bar — a real client-side filter over the same `products`
-// data the catalogue page renders from. No separate search index, no invented
-// results: the list is serialised into the page at build time, so confirmed
-// products appear automatically once they are added to products.ts.
+--- 
+// Product search bar — a real client-side filter over the same live product
+// store the catalogue page renders from. No separate search index, no invented
+// results: the list is read from data/products.json at render time and
+// serialised into the page, so admin edits appear in search immediately.
 //
 // Two variants of one search bar:
 //  - default: centred pill in the desktop header row (max 545px)
@@ -10,7 +10,7 @@
 // The search index element and bootstrap script are emitted once (desktop
 // variant); initSearch() binds every [data-search-form] on the page.
 
-import { products } from '../data/products';
+import { getFlattenedProducts } from '../lib/catalog';
 
 interface Props {
   /** Renders the full-width stacked variant used by the mobile header. */
@@ -19,6 +19,7 @@ interface Props {
 
 const { stack = false } = Astro.props;
 
+const products = getFlattenedProducts();
 const searchData = JSON.stringify(products).replace(/</g, '\\u003c');
 ---
 

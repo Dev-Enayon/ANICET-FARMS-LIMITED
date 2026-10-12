@@ -1,11 +1,15 @@
 // ---------------------------------------------------------------------------
-// Product catalogue.
+// Product catalogue — category configuration (the fixed, editorial part).
 //
-// CRITICAL RULE: Do not invent products, prices, certifications, origins or
-// destinations. The enquiry-first CTA reflects a corporate/B2B stance (no
-// e-commerce here). `productCategories` is the single source of truth; the
-// flattened `products` list is derived from it so Search and pages share one
-// database.
+// CRITICAL RULES:
+//  - `categoryDefinitions` is the fixed catalogue structure (collections and
+//    their card imagery). Admin can add/update/remove *products* inside these
+//    collections via the /admin/ dashboard — the collections themselves are
+//    curated here.
+//  - Live product entries live in data/products.json and are read at request
+//    time through src/lib/catalog.ts. Do NOT invent products, prices,
+//    certifications, origins or destinations. The enquiry-first CTA reflects a
+//    corporate/B2B stance (no e-commerce here).
 //
 // Image asset manifest (originals → served copies under public/img):
 //   img/product-card/WhatsApp Image 2026-09-28 at 11.51.12.jpeg
@@ -41,7 +45,10 @@ export interface ProductCategory {
   products: Product[];
 }
 
-export const productCategories: ProductCategory[] = [
+export type CategoryDefinition = Omit<ProductCategory, 'products'>;
+
+/** Fixed catalogue structure. Admin edits products, not collections. */
+export const categoryDefinitions: CategoryDefinition[] = [
   {
     id: 'vegetables',
     name: 'Vegetables',
@@ -65,50 +72,11 @@ export const productCategories: ProductCategory[] = [
       },
       { src: '/img/products/vegetables/water-leaf.png', alt: 'Photograph of Water Leaf' },
     ],
-    products: [
-      {
-        id: 'bitter-leaf',
-        name: 'Bitter Leaf',
-        category: 'Vegetables',
-        description:
-          'A traditional green leaf vegetable, prepared for quality presentation and dependable supply.',
-        availability: 'request-information',
-        image: '/img/products/vegetables/bitter-leaf.png',
-        imageAlt: 'Photograph of Bitter Leaf',
-        imageWidth: 1583,
-        imageHeight: 994,
-      },
-      {
-        id: 'ugwu',
-        name: 'Ugwu (Fluted Pumpkin Leaf)',
-        category: 'Vegetables',
-        description:
-          'Fluted pumpkin leaf, a widely used green vegetable, handled with care for quality-conscious customers and markets.',
-        availability: 'request-information',
-        image: '/img/products/vegetables/ugu.png',
-        imageAlt: 'Photograph of Ugwu (Fluted Pumpkin Leaf)',
-        imageWidth: 1672,
-        imageHeight: 941,
-      },
-      {
-        id: 'water-leaf',
-        name: 'Water Leaf',
-        category: 'Vegetables',
-        description:
-          'A tender leafy vegetable, prepared with attention to freshness, handling and market presentation.',
-        availability: 'request-information',
-        image: '/img/products/vegetables/water-leaf.png',
-        imageAlt: 'Photograph of Water Leaf',
-        imageWidth: 940,
-        imageHeight: 1674,
-      },
-    ],
   },
   {
     id: 'meat',
     name: 'Meat',
-    summary:
-      'Meat products presented with emphasis on careful sourcing, handling and dependable supply.',
+    summary: 'Meat products presented with emphasis on careful sourcing, handling and dependable supply.',
     cardImage: '/img/hero/hero-meat-seafood.jpeg',
     cardImageAlt: 'Fresh meat, seafood, poultry and eggs',
     // Only one honest meat/sourcing photograph exists at this time, so this
@@ -119,7 +87,6 @@ export const productCategories: ProductCategory[] = [
         alt: 'Fresh meat, seafood, poultry and eggs',
       },
     ],
-    products: [],
   },
   {
     id: 'farming',
@@ -138,22 +105,14 @@ export const productCategories: ProductCategory[] = [
       { src: '/img/farming/harvesting.jpeg', alt: 'Harvested crops gathered from the farm' },
       { src: '/img/hero/hero-farm.jpeg', alt: 'Agricultural farmland landscape' },
     ],
-    products: [],
   },
   {
     id: 'other-goods',
     name: 'Fabrics & Other Export Goods',
     summary:
       'Exploring suitable fabrics and other export-oriented goods for broader commercial and export opportunities.',
-    products: [],
   },
 ];
-
-// Flattened list — shared by the header search index and catalogue rendering.
-export const products: Product[] = productCategories.flatMap((category) => category.products);
-
-/** The category shown as the homepage featured collection (real products today). */
-export const featuredCategory = productCategories.find((category) => category.id === 'vegetables');
 
 export const productEnquiryLabel = 'Request information';
 
