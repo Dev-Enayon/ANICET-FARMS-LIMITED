@@ -1,10 +1,8 @@
 ---
 // Products — premium agricultural / export catalogue, enquiry-first.
-// Renders on demand (SSR) from the live catalogue store so admin edits to
-// data/products.json appear without a rebuild. Nothing is invented, and
-// collections still being prepared simply show no product entries.
-
-export const prerender = false;
+// Renders purely from productCategories (src/data/products.ts). Each
+// collection renders as one full-width category card — nothing is invented,
+// and collections still being prepared simply show no product entries.
 
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
@@ -13,9 +11,7 @@ import Reveal from '../components/Reveal.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import CtaBand from '../components/CtaBand.astro';
 import ProductCategoryCard from '../components/ProductCategoryCard.astro';
-import { getCatalog } from '../lib/catalog';
-
-const productCategories = getCatalog();
+import { productCategories } from '../data/products';
 
 const sourcingPrinciples = [
   {

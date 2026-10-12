@@ -10,10 +10,6 @@ const dist = resolve('dist');
 const { default: config } = await import('../astro.config.mjs');
 const base = String(config.site ?? '').replace(/\/$/, '');
 
-// On-demand (SSR) routes emit no static files; the node adapter serves them
-// from dist/server. Verify emitted HTML under dist/client when present.
-const distRoot = existsSync(resolve(dist, 'client')) ? resolve(dist, 'client') : dist;
-
 const files = [];
 function walk(dir) {
   for (const entry of readdirSync(dir)) {
@@ -22,7 +18,7 @@ function walk(dir) {
     else files.push(p);
   }
 }
-walk(distRoot);
+walk(dist);
 
 const htmlFiles = files.filter((f) => f.endsWith('.html'));
 const problems = [];
@@ -30,20 +26,6 @@ const seen = new Map();
 
 // Intentional placeholders for commerce routes that do not exist yet.
 const PLACEHOLDER_ROUTES = new Set(['/account', '/wishlist', '/cart']);
-
-// Server-rendered (on-demand) routes in the hybrid build. These are served by
-// the @astrojs/node runtime rather than emitted as static files, so a missing
-// file on disk is expected, not a broken link. The /admin/ dashboard and API
-// routes are internal tooling and are covered by the admin verification suite.
-const ON_DEMAND_ROUTES = new Set([
-  '',
-  '/',
-  '/products',
-  '/admin',
-  '/api/auth/login',
-  '/api/auth/logout',
-  '/api/products',
-]);
 
 for (const file of htmlFiles) {
   const html = readFileSync(file, 'utf8');
@@ -73,11 +55,10 @@ function check(raw, file) {
   const clean = raw.split(/[?#]/)[0];
   if (!clean) return;
   if (PLACEHOLDER_ROUTES.has(clean.replace(/\/$/, ''))) return;
-  if (ON_DEMAND_ROUTES.has(clean.replace(/\/$/, ''))) return;
 
   // The 404 page's canonical is /404/ but the emitted file is 404.html.
   if (clean === '/404/' || clean === '/404') {
-    if (existsSync(resolve(distRoot, '404.html'))) return;
+    if (existsSync(resolve(dist, '404.html'))) return;
     const key = `${file} -> ${clean}`;
     if (!seen.has(key)) {
       seen.set(key, true);
@@ -86,7 +67,7 @@ function check(raw, file) {
     return;
   }
 
-  let target = resolve(distRoot, `.${clean}`);
+  let target = resolve(dist, `.${clean}`);
   if (!extname(target)) target = join(target, 'index.html');
   if (!existsSync(target)) {
     const key = `${file} -> ${clean}`;
